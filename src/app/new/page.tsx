@@ -1,10 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import { onAuthStateChanged, type User } from "firebase/auth";
 import { FormEvent, useEffect, useMemo, useState } from "react";
-import { auth } from "@/lib/firebase";
 import { getSupabase } from "@/lib/supabase";
+import { useAuth } from "@/lib/useAuth";
 
 const BUCKET = "capsule-hyeong";
 
@@ -35,8 +34,7 @@ function formatOpenAt(iso: string): string {
 }
 
 export default function NewCapsulePage() {
-  const [user, setUser] = useState<User | null>(null);
-  const [ready, setReady] = useState(false);
+  const { user, ready } = useAuth();
   const [recipient, setRecipient] = useState("");
   const [letter, setLetter] = useState("");
   const [openAt, setOpenAt] = useState("");
@@ -48,13 +46,6 @@ export default function NewCapsulePage() {
     () => files.map((file) => URL.createObjectURL(file)),
     [files],
   );
-
-  useEffect(() => {
-    return onAuthStateChanged(auth, (nextUser) => {
-      setUser(nextUser);
-      setReady(true);
-    });
-  }, []);
 
   useEffect(() => {
     return () => {

@@ -79,10 +79,11 @@ export function getCountdownParts(
   };
 }
 
-export async function fetchCapsules(): Promise<CapsuleListItem[]> {
+export async function fetchMyCapsules(uid: string): Promise<CapsuleListItem[]> {
   const { data, error } = await getSupabase()
     .from("capsules")
     .select(CAPSULE_SELECT)
+    .eq("creator_uid", uid)
     .order("open_at", { ascending: true });
 
   if (error) throw error;

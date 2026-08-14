@@ -2,37 +2,85 @@
 
 import CapsuleCard from "@/components/CapsuleCard";
 import Link from "next/link";
-import { onAuthStateChanged, type User } from "firebase/auth";
 import { useEffect, useMemo, useState } from "react";
 import { signInWithGoogle, signOut } from "@/lib/auth";
 import {
-  fetchCapsules,
+  fetchMyCapsules,
   isCapsuleOpen,
   type CapsuleListItem,
 } from "@/lib/capsules";
-import { auth } from "@/lib/firebase";
+import { useAuth } from "@/lib/useAuth";
 
-type Filter = "all" | "mine" | "locked" | "open";
+type Filter = "all" | "locked" | "open";
 
 export default function HomeAuth() {
-  const [user, setUser] = useState<User | null>(null);
-  const [ready, setReady] = useState(false);
+  const { user, ready } = useAuth();
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  async function handleGoogleSignIn() {
+    setBusy(true);
+    setError(null);
+    try {
+      await signInWithGoogle();
+    } catch (err) {
+      setError(toAuthErrorMessage(err));
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function handleSignOut() {
+    setBusy(true);
+    setError(null);
+    try {
+      await signOut();
+    } catch (err) {
+      setError(
+        err instanceof Error ? err.message : "로그아웃에 실패했습니다.",
+      );
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  if (!ready || !user) {
+    return (
+      <LandingScreen
+        busy={busy || !ready}
+        error={error}
+        onSignIn={handleGoogleSignIn}
+      />
+    );
+  }
+
+  return (
+    <UserDashboard
+      key={user.uid}
+      user={user}
+      busy={busy}
+      onSignOut={handleSignOut}
+    />
+  );
+}
+
+function UserDashboard({
+  user,
+  busy,
+  onSignOut,
+}: {
+  user: NonNullable<ReturnType<typeof useAuth>["user"]>;
+  busy: boolean;
+  onSignOut: () => void;
+}) {
   const [capsules, setCapsules] = useState<CapsuleListItem[]>([]);
   const [loadingCapsules, setLoadingCapsules] = useState(true);
   const [filter, setFilter] = useState<Filter>("all");
-
-  useEffect(() => {
-    return onAuthStateChanged(auth, (nextUser) => {
-      setUser(nextUser);
-      setReady(true);
-    });
-  }, []);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     let cancelled = false;
-    fetchCapsules()
+    fetchMyCapsules(user.uid)
       .then((data) => {
         if (!cancelled) {
           setCapsules(data);
@@ -54,7 +102,7 @@ export default function HomeAuth() {
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [user.uid]);
 
   const stats = useMemo(() => {
     const locked = capsules.filter((c) => !isCapsuleOpen(c.open_at)).length;
@@ -62,18 +110,11 @@ export default function HomeAuth() {
       total: capsules.length,
       locked,
       open: capsules.length - locked,
-      mine: user
-        ? capsules.filter((c) => c.creator_uid === user.uid).length
-        : 0,
     };
-  }, [capsules, user]);
+  }, [capsules]);
 
   const filtered = useMemo(() => {
     switch (filter) {
-      case "mine":
-        return user
-          ? capsules.filter((c) => c.creator_uid === user.uid)
-          : [];
       case "locked":
         return capsules.filter((c) => !isCapsuleOpen(c.open_at));
       case "open":
@@ -81,34 +122,7 @@ export default function HomeAuth() {
       default:
         return capsules;
     }
-  }, [capsules, filter, user]);
-
-  async function handleGoogleSignIn() {
-    setBusy(true);
-    setError(null);
-    try {
-      await signInWithGoogle();
-    } catch (err) {
-      setError(toAuthErrorMessage(err));
-    } finally {
-      setBusy(false);
-    }
-  }
-
-  async function handleSignOut() {
-    setBusy(true);
-    setError(null);
-    try {
-      await signOut();
-      setFilter("all");
-    } catch (err) {
-      setError(
-        err instanceof Error ? err.message : "로그아웃에 실패했습니다.",
-      );
-    } finally {
-      setBusy(false);
-    }
-  }
+  }, [capsules, filter]);
 
   return (
     <div className="min-h-full bg-gradient-to-b from-slate-100 via-sky-50 to-teal-50/50">
@@ -118,130 +132,137 @@ export default function HomeAuth() {
             <h1 className="text-2xl font-semibold tracking-tight text-slate-800">
               캡슐 미
             </h1>
-            <p className="text-sm text-slate-500">
-              묻힌 캡슐을 한눈에 확인하세요
-            </p>
+            <p className="text-sm text-slate-500">내가 묻은 캡슐</p>
           </div>
-
-          {ready && user ? (
-            <div className="flex items-center gap-3">
-              {user.photoURL ? (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img
-                  src={user.photoURL}
-                  alt=""
-                  className="h-9 w-9 rounded-full"
-                  referrerPolicy="no-referrer"
-                />
-              ) : null}
-              <button
-                type="button"
-                onClick={handleSignOut}
-                disabled={busy}
-                className="text-sm text-slate-500 hover:text-slate-700 disabled:opacity-50"
-              >
-                로그아웃
-              </button>
+          <div className="flex items-center gap-3">
+            {user.photoURL ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                src={user.photoURL}
+                alt=""
+                className="h-9 w-9 rounded-full"
+                referrerPolicy="no-referrer"
+              />
+            ) : null}
+            <div className="hidden text-right sm:block">
+              <p className="text-sm font-medium text-slate-800">
+                {user.displayName ?? "사용자"}
+              </p>
+              <p className="text-xs text-slate-500">{user.email}</p>
             </div>
-          ) : ready ? (
             <button
               type="button"
-              onClick={handleGoogleSignIn}
+              onClick={onSignOut}
               disabled={busy}
-              className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-slate-800 shadow-sm hover:bg-slate-50 disabled:opacity-50"
+              className="text-sm text-slate-500 hover:text-slate-700 disabled:opacity-50"
             >
-              <GoogleIcon />
-              로그인
+              로그아웃
             </button>
-          ) : null}
+          </div>
         </div>
       </header>
 
       <main className="mx-auto max-w-5xl px-6 py-8">
-        {!ready ? (
-          <p className="text-center text-sm text-slate-400">불러오는 중…</p>
+        <div className="mb-8 grid grid-cols-3 gap-3">
+          <StatCard label="전체" value={stats.total} />
+          <StatCard label="잠금" value={stats.locked} accent="amber" />
+          <StatCard label="열림" value={stats.open} accent="teal" />
+        </div>
+
+        <div className="mb-6 flex flex-wrap items-center justify-between gap-4">
+          <div className="flex flex-wrap gap-2">
+            <FilterButton
+              active={filter === "all"}
+              onClick={() => setFilter("all")}
+            >
+              전체
+            </FilterButton>
+            <FilterButton
+              active={filter === "locked"}
+              onClick={() => setFilter("locked")}
+            >
+              잠금
+            </FilterButton>
+            <FilterButton
+              active={filter === "open"}
+              onClick={() => setFilter("open")}
+            >
+              열림
+            </FilterButton>
+          </div>
+          <Link
+            href="/new"
+            className="inline-flex items-center justify-center rounded-full bg-slate-800 px-5 py-2.5 text-sm font-medium text-white transition hover:bg-slate-700"
+          >
+            + 캡슐 묻기
+          </Link>
+        </div>
+
+        {loadingCapsules ? (
+          <p className="py-16 text-center text-sm text-slate-400">
+            캡슐 불러오는 중…
+          </p>
+        ) : filtered.length === 0 ? (
+          <EmptyState
+            filter={filter}
+            action={
+              <Link
+                href="/new"
+                className="inline-flex rounded-full bg-slate-800 px-6 py-2.5 text-sm font-medium text-white hover:bg-slate-700"
+              >
+                캡슐 묻으러 가기
+              </Link>
+            }
+          />
         ) : (
-          <>
-            <div className="mb-8 grid grid-cols-2 gap-3 sm:grid-cols-4">
-              <StatCard label="전체" value={stats.total} />
-              <StatCard label="잠금" value={stats.locked} accent="amber" />
-              <StatCard label="열림" value={stats.open} accent="teal" />
-              <StatCard label="내 캡슐" value={stats.mine} accent="slate" />
-            </div>
-
-            <div className="mb-6 flex flex-wrap items-center justify-between gap-4">
-              <div className="flex flex-wrap gap-2">
-                <FilterButton
-                  active={filter === "all"}
-                  onClick={() => setFilter("all")}
-                >
-                  전체
-                </FilterButton>
-                {user ? (
-                  <FilterButton
-                    active={filter === "mine"}
-                    onClick={() => setFilter("mine")}
-                  >
-                    내 캡슐
-                  </FilterButton>
-                ) : null}
-                <FilterButton
-                  active={filter === "locked"}
-                  onClick={() => setFilter("locked")}
-                >
-                  잠금
-                </FilterButton>
-                <FilterButton
-                  active={filter === "open"}
-                  onClick={() => setFilter("open")}
-                >
-                  열림
-                </FilterButton>
-              </div>
-
-              {user ? (
-                <Link
-                  href="/new"
-                  className="inline-flex items-center justify-center rounded-full bg-slate-800 px-5 py-2.5 text-sm font-medium text-white transition hover:bg-slate-700"
-                >
-                  + 캡슐 묻기
-                </Link>
-              ) : (
-                <button
-                  type="button"
-                  onClick={handleGoogleSignIn}
-                  className="inline-flex items-center justify-center rounded-full bg-slate-800 px-5 py-2.5 text-sm font-medium text-white transition hover:bg-slate-700"
-                >
-                  로그인하고 묻기
-                </button>
-              )}
-            </div>
-
-            {loadingCapsules ? (
-              <p className="py-16 text-center text-sm text-slate-400">
-                캡슐 불러오는 중…
-              </p>
-            ) : filtered.length === 0 ? (
-              <EmptyState
-                filter={filter}
-                onSignIn={user ? undefined : handleGoogleSignIn}
-              />
-            ) : (
-              <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                {filtered.map((capsule) => (
-                  <CapsuleCard
-                    key={capsule.id}
-                    capsule={capsule}
-                    isMine={user?.uid === capsule.creator_uid}
-                  />
-                ))}
-              </div>
-            )}
-          </>
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {filtered.map((capsule) => (
+              <CapsuleCard key={capsule.id} capsule={capsule} isMine />
+            ))}
+          </div>
         )}
 
         {error ? (
           <p className="mt-6 text-center text-sm text-rose-600" role="alert">
+            {error}
+          </p>
+        ) : null}
+      </main>
+    </div>
+  );
+}
+
+function LandingScreen({
+  busy,
+  error,
+  onSignIn,
+}: {
+  busy: boolean;
+  error?: string | null;
+  onSignIn: () => void;
+}) {
+  return (
+    <div className="flex min-h-full flex-1 items-center justify-center bg-gradient-to-b from-slate-100 via-sky-50 to-teal-50/50 px-6 py-16">
+      <main className="w-full max-w-md rounded-3xl border border-white/70 bg-white/75 px-8 py-14 text-center shadow-[0_24px_60px_-28px_rgba(30,58,95,0.35)] backdrop-blur-sm">
+        <h1 className="mb-5 text-5xl font-semibold tracking-tight text-slate-800 sm:text-6xl">
+          캡슐 미
+        </h1>
+        <p className="mb-10 text-base leading-relaxed text-slate-500 sm:text-lg">
+          사진과 편지를 묻고, 열람일에 함께 열어요.
+        </p>
+
+        <button
+          type="button"
+          onClick={onSignIn}
+          disabled={busy}
+          className="inline-flex w-full items-center justify-center gap-3 rounded-full border border-slate-200 bg-white px-8 py-3.5 text-sm font-medium tracking-wide text-slate-800 shadow-sm transition hover:border-slate-300 hover:bg-slate-50 hover:shadow-md disabled:opacity-50"
+        >
+          <GoogleIcon />
+          {busy ? "로그인 중…" : "Google로 계속하기"}
+        </button>
+
+        {error ? (
+          <p className="mt-6 text-sm text-rose-600" role="alert">
             {error}
           </p>
         ) : null}
@@ -301,14 +322,13 @@ function FilterButton({
 
 function EmptyState({
   filter,
-  onSignIn,
+  action,
 }: {
   filter: Filter;
-  onSignIn?: () => void;
+  action: React.ReactNode;
 }) {
   const messages: Record<Filter, string> = {
     all: "아직 묻힌 캡슐이 없어요.",
-    mine: "내가 묻은 캡슐이 없어요.",
     locked: "잠금 상태인 캡슐이 없어요.",
     open: "열람 가능한 캡슐이 없어요.",
   };
@@ -317,22 +337,7 @@ function EmptyState({
     <div className="rounded-3xl border border-dashed border-slate-200 bg-white/50 px-8 py-16 text-center">
       <p className="mb-2 text-4xl">🫙</p>
       <p className="mb-6 text-slate-600">{messages[filter]}</p>
-      {onSignIn ? (
-        <button
-          type="button"
-          onClick={onSignIn}
-          className="rounded-full bg-slate-800 px-6 py-2.5 text-sm font-medium text-white hover:bg-slate-700"
-        >
-          로그인하고 첫 캡슐 묻기
-        </button>
-      ) : (
-        <Link
-          href="/new"
-          className="inline-flex rounded-full bg-slate-800 px-6 py-2.5 text-sm font-medium text-white hover:bg-slate-700"
-        >
-          캡슐 묻으러 가기
-        </Link>
-      )}
+      {action}
     </div>
   );
 }
@@ -362,8 +367,8 @@ function GoogleIcon() {
   return (
     <svg
       aria-hidden
-      width="16"
-      height="16"
+      width="18"
+      height="18"
       viewBox="0 0 18 18"
       xmlns="http://www.w3.org/2000/svg"
     >
