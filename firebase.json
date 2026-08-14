@@ -3,7 +3,11 @@
     "providers": {
       "googleSignIn": {
         "oAuthBrandDisplayName": "캡슐 미",
-        "supportEmail": "k01042322375@gmail.com"
+        "supportEmail": "k01042322375@gmail.com",
+        "authorizedRedirectUris": [
+          "https://capsule-hyeong.vercel.app",
+          "http://localhost"
+        ]
       }
     },
     "authorizedDomains": [

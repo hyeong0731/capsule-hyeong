@@ -357,7 +357,11 @@ function toAuthErrorMessage(err: unknown): string {
       return "팝업이 차단되었습니다. 브라우저에서 팝업을 허용해 주세요.";
     }
     if (code === "auth/unauthorized-domain") {
-      return "이 도메인은 Firebase 인증에 허용되지 않았습니다.";
+      const host =
+        typeof window !== "undefined" ? window.location.hostname : "";
+      return host
+        ? `이 도메인(${host})은 Firebase 인증에 허용되지 않았습니다.`
+        : "이 도메인은 Firebase 인증에 허용되지 않았습니다.";
     }
   }
   return err instanceof Error ? err.message : "로그인에 실패했습니다.";
