@@ -1,1 +1,16 @@
-{}
+{
+  "auth": {
+    "providers": {
+      "googleSignIn": {
+        "oAuthBrandDisplayName": "캡슐 미",
+        "supportEmail": "k01042322375@gmail.com"
+      }
+    },
+    "authorizedDomains": [
+      "localhost",
+      "capsule-hyeong.vercel.app",
+      "capsule-hyeong-tmmb.vercel.app",
+      "capsule-hyeong-iqbc.vercel.app"
+    ]
+  }
+}
