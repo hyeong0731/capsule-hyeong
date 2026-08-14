@@ -4,7 +4,7 @@ import Link from "next/link";
 import { onAuthStateChanged, type User } from "firebase/auth";
 import { FormEvent, useEffect, useMemo, useState } from "react";
 import { auth } from "@/lib/firebase";
-import { supabase } from "@/lib/supabase";
+import { getSupabase } from "@/lib/supabase";
 
 const BUCKET = "capsule-hyeong";
 
@@ -88,13 +88,13 @@ export default function NewCapsulePage() {
         const ext = extensionFromFile(file);
         const path = `${user.uid}/${timestamp}-${i}.${ext}`;
 
-        const { error: uploadError } = await supabase.storage
+        const { error: uploadError } = await getSupabase().storage
           .from(BUCKET)
           .upload(path, file, { contentType: file.type, upsert: false });
 
         if (uploadError) throw uploadError;
 
-        const { data: urlData } = supabase.storage
+        const { data: urlData } = getSupabase().storage
           .from(BUCKET)
           .getPublicUrl(path);
 
@@ -103,7 +103,7 @@ export default function NewCapsulePage() {
 
       const openAtIso = new Date(openAt).toISOString();
 
-      const { data: capsule, error: capsuleError } = await supabase
+      const { data: capsule, error: capsuleError } = await getSupabase()
         .from("capsules")
         .insert({
           creator_uid: user.uid,
@@ -117,7 +117,7 @@ export default function NewCapsulePage() {
       if (capsuleError) throw capsuleError;
 
       if (uploaded.length > 0) {
-        const { error: imagesError } = await supabase
+        const { error: imagesError } = await getSupabase()
           .from("capsule_images")
           .insert(
             uploaded.map((item, index) => ({

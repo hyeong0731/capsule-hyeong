@@ -1,4 +1,4 @@
-import { supabase } from "@/lib/supabase";
+import { getSupabase } from "@/lib/supabase";
 
 export type CapsuleImage = {
   public_url: string;
@@ -80,7 +80,7 @@ export function getCountdownParts(
 }
 
 export async function fetchCapsules(): Promise<CapsuleListItem[]> {
-  const { data, error } = await supabase
+  const { data, error } = await getSupabase()
     .from("capsules")
     .select(CAPSULE_SELECT)
     .order("open_at", { ascending: true });
@@ -91,7 +91,7 @@ export async function fetchCapsules(): Promise<CapsuleListItem[]> {
 }
 
 export async function fetchCapsuleById(id: string): Promise<Capsule | null> {
-  const { data, error } = await supabase
+  const { data, error } = await getSupabase()
     .from("capsules")
     .select(CAPSULE_SELECT)
     .eq("id", id)
