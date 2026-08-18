@@ -4,6 +4,18 @@ import Link from "next/link";
 import { FormEvent, useEffect, useMemo, useState } from "react";
 import { getSupabase } from "@/lib/supabase";
 import { useAuth } from "@/lib/useAuth";
+import {
+  fetchWeatherSnapshot,
+  formatHumidity,
+  formatTemperature,
+  readDeviceLocation,
+  weatherEmoji,
+  type WeatherSnapshot,
+} from "@/lib/weather";
+import { consumeCapsuleDraft } from "@/lib/capsule-draft";
+import { fetchCapsuleMood, FORM_LABEL, type CapsuleMood } from "@/lib/capsule-mood";
+import WeatherCapsule from "@/components/WeatherCapsule";
+import KeywordChips from "@/components/KeywordChips";
 
 const BUCKET = "capsule-hyeong";
 
@@ -12,6 +24,8 @@ type CapsuleResult = {
   recipient: string;
   openAt: string;
   imageUrls: string[];
+  weather: WeatherSnapshot | null;
+  mood: CapsuleMood | null;
 };
 
 function extensionFromFile(file: File): string {
@@ -48,6 +62,14 @@ export default function NewCapsulePage() {
   );
 
   useEffect(() => {
+    const draft = consumeCapsuleDraft();
+    if (!draft) return;
+    if (draft.recipient) setRecipient(draft.recipient);
+    if (draft.letter) setLetter(draft.letter);
+    if (draft.openAt) setOpenAt(draft.openAt);
+  }, []);
+
+  useEffect(() => {
     return () => {
       previewUrls.forEach((url) => URL.revokeObjectURL(url));
     };
@@ -73,6 +95,12 @@ export default function NewCapsulePage() {
     try {
       const timestamp = Date.now();
       const uploaded: { path: string; publicUrl: string }[] = [];
+      const weatherPromise = readDeviceLocation()
+        .then((location) => fetchWeatherSnapshot(location.lat, location.lon))
+        .catch(() => null);
+      const moodPromise = weatherPromise.then((weather) =>
+        fetchCapsuleMood({ weather, letter, recipient }),
+      );
 
       for (let i = 0; i < files.length; i++) {
         const file = files[i];
@@ -93,6 +121,7 @@ export default function NewCapsulePage() {
       }
 
       const openAtIso = new Date(openAt).toISOString();
+      const [weather, mood] = await Promise.all([weatherPromise, moodPromise]);
 
       const { data: capsule, error: capsuleError } = await getSupabase()
         .from("capsules")
@@ -101,6 +130,15 @@ export default function NewCapsulePage() {
           recipient,
           letter,
           open_at: openAtIso,
+          weather_condition: weather?.condition ?? null,
+          weather_temp: weather?.temperature ?? null,
+          weather_humidity: weather?.humidity ?? null,
+          mood_line: mood.oneLiner,
+          keywords: mood.keywords,
+          capsule_form: mood.form,
+          capsule_primary: mood.primary,
+          capsule_secondary: mood.secondary,
+          capsule_accent: mood.accent,
         })
         .select("id")
         .single();
@@ -127,6 +165,8 @@ export default function NewCapsulePage() {
         recipient,
         openAt: openAtIso,
         imageUrls: uploaded.map((item) => item.publicUrl),
+        weather,
+        mood,
       });
     } catch (err) {
       const message =
@@ -190,6 +230,11 @@ export default function NewCapsulePage() {
                     />
                   </label>
 
+                  <p className="rounded-2xl bg-sky-50/80 px-4 py-3 text-sm leading-relaxed text-slate-600">
+                    캡슐을 묻는 순간의 날씨로 그날의 한마디, 키워드,
+                    그리고 색과 형태가 다른 캡슐이 만들어집니다.
+                  </p>
+
                   <label className="flex flex-col gap-2 text-left">
                     <span className="text-sm font-medium text-slate-700">
                       열람일
@@ -240,7 +285,7 @@ export default function NewCapsulePage() {
                     {submitting ? (
                       <>
                         <Spinner />
-                        업로드 되는중
+                        날씨를 읽고 캡슐을 빚는 중
                       </>
                     ) : (
                       "캡슐 묻기"
@@ -257,18 +302,48 @@ export default function NewCapsulePage() {
 }
 
 function ResultView({ result }: { result: CapsuleResult }) {
+  const mood = result.mood;
+
   return (
     <div className="text-center">
-      <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-full bg-teal-100 text-3xl">
-        ✓
-      </div>
+      {mood ? (
+        <div
+          className="mb-6 rounded-3xl px-4 pb-5 pt-6"
+          style={{ background: `linear-gradient(180deg, ${mood.secondary}, #ffffff)` }}
+        >
+          <WeatherCapsule
+            form={mood.form}
+            primary={mood.primary}
+            secondary={mood.secondary}
+            accent={mood.accent}
+            size="hero"
+          />
+          <p className="mt-3 text-xs font-medium" style={{ color: mood.accent }}>
+            {FORM_LABEL[mood.form]}
+          </p>
+        </div>
+      ) : (
+        <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-full bg-teal-100 text-3xl">
+          ✓
+        </div>
+      )}
       <h1 className="mb-2 text-2xl font-semibold tracking-tight text-slate-800">
         캡슐을 묻었어요
       </h1>
-      <p className="mb-8 text-sm text-slate-500">
+      <p className="mb-6 text-sm text-slate-500">
         {result.recipient}님에게 전달될 캡슐이 저장됐습니다.
       </p>
 
+      {mood?.oneLiner ? (
+        <p className="mb-4 text-base font-medium leading-relaxed text-slate-700">
+          “{mood.oneLiner}”
+        </p>
+      ) : null}
+      <KeywordChips
+        className="mb-8"
+        keywords={mood?.keywords}
+        accent={mood?.accent}
+      />
       <dl className="mb-8 space-y-3 rounded-2xl bg-slate-50 px-5 py-4 text-left text-sm">
         <div>
           <dt className="text-slate-400">캡슐 번호</dt>
@@ -286,6 +361,20 @@ function ResultView({ result }: { result: CapsuleResult }) {
           <dt className="text-slate-400">사진</dt>
           <dd className="mt-0.5 text-slate-700">{result.imageUrls.length}장</dd>
         </div>
+        {result.weather ? (
+          <div>
+            <dt className="text-slate-400">묻은 날의 날씨</dt>
+            <dd className="mt-0.5 text-slate-700">
+              {weatherEmoji(result.weather.condition)} {result.weather.condition}
+              {formatTemperature(result.weather.temperature)
+                ? ` · ${formatTemperature(result.weather.temperature)}`
+                : ""}
+              {formatHumidity(result.weather.humidity)
+                ? ` · 습도 ${formatHumidity(result.weather.humidity)}`
+                : ""}
+            </dd>
+          </div>
+        ) : null}
       </dl>
 
       {result.imageUrls.length > 0 ? (

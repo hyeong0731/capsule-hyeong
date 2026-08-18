@@ -1,6 +1,9 @@
 "use client";
 
 import Countdown from "@/components/Countdown";
+import WeatherMemory from "@/components/WeatherMemory";
+import WeatherCapsule from "@/components/WeatherCapsule";
+import KeywordChips from "@/components/KeywordChips";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import {
@@ -9,6 +12,7 @@ import {
   isCapsuleOpen,
   type Capsule,
 } from "@/lib/capsules";
+import { FORM_LABEL, hasCapsuleLook, isCapsuleForm } from "@/lib/capsule-mood";
 
 const IS_DEV = process.env.NODE_ENV === "development";
 
@@ -116,6 +120,15 @@ export default function CapsuleDetail({ id }: CapsuleDetailProps) {
         </p>
       </header>
 
+      <WeatherMemory
+        className="mb-8"
+        condition={capsule.weather_condition}
+        temperature={capsule.weather_temp}
+        humidity={capsule.weather_humidity}
+      />
+
+      <CapsuleIdentity capsule={capsule} />
+
       {canView ? (
         <OpenedContent capsule={capsule} isDevPreview={devPreview && !opened} />
       ) : (
@@ -137,6 +150,56 @@ export default function CapsuleDetail({ id }: CapsuleDetailProps) {
   );
 }
 
+function CapsuleIdentity({ capsule }: { capsule: Capsule }) {
+  const custom = hasCapsuleLook({
+    form: capsule.capsule_form,
+    primary: capsule.capsule_primary,
+  });
+  if (!custom && !capsule.mood_line && !(capsule.keywords && capsule.keywords.length)) {
+    return null;
+  }
+
+  const formLabel =
+    capsule.capsule_form && isCapsuleForm(capsule.capsule_form)
+      ? FORM_LABEL[capsule.capsule_form]
+      : null;
+
+  return (
+    <div
+      className="mb-8 overflow-hidden rounded-3xl px-5 pb-5 pt-6 text-center"
+      style={{
+        background: capsule.capsule_secondary
+          ? `linear-gradient(180deg, ${capsule.capsule_secondary}, #ffffff)`
+          : undefined,
+      }}
+    >
+      {custom ? (
+        <WeatherCapsule
+          form={capsule.capsule_form}
+          primary={capsule.capsule_primary}
+          secondary={capsule.capsule_secondary}
+          accent={capsule.capsule_accent}
+        />
+      ) : null}
+      {formLabel ? (
+        <p className="mt-2 text-xs font-medium" style={{ color: capsule.capsule_accent ?? "#64748b" }}>
+          {formLabel}
+        </p>
+      ) : null}
+      {capsule.mood_line ? (
+        <p className="mt-3 text-base font-medium leading-relaxed text-slate-700">
+          “{capsule.mood_line}”
+        </p>
+      ) : null}
+      <KeywordChips
+        className="mt-3"
+        keywords={capsule.keywords}
+        accent={capsule.capsule_accent}
+      />
+    </div>
+  );
+}
+
 function LockedContent({
   capsule,
   onDevPreview,
@@ -154,9 +217,9 @@ function LockedContent({
           아직 열림 기간이 남았어요
         </h2>
         <p className="mt-2 text-sm leading-relaxed text-amber-900/70">
-          열람일이 되기 전까지는 편지와 사진을 열 수 없어요.
+          편지와 사진은 열람일까지 잠겨 있어요.
           <br />
-          아래 카운트다운이 끝나면 확인할 수 있습니다.
+          키워드만 보고 어떤 날이었는지 떠올려 보세요.
         </p>
 
         <div className="mt-8">
