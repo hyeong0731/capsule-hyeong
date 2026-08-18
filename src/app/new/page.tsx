@@ -11,6 +11,7 @@ import {
   readDeviceLocation,
   type WeatherSnapshot,
 } from "@/lib/weather";
+import { trackBuryCapsule } from "@/lib/analytics";
 import { consumeCapsuleDraft } from "@/lib/capsule-draft";
 import { fetchCapsuleMood, FORM_LABEL, type CapsuleMood } from "@/lib/capsule-mood";
 import WeatherCapsule from "@/components/WeatherCapsule";
@@ -160,6 +161,7 @@ export default function NewCapsulePage() {
         if (imagesError) throw imagesError;
       }
 
+      trackBuryCapsule(capsule.id);
       setResult({
         id: capsule.id,
         recipient,

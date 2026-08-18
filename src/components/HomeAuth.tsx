@@ -7,6 +7,7 @@ import AppCanvas from "@/components/AppCanvas";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
+import { trackLogin, trackLogout } from "@/lib/analytics";
 import { signInWithGoogle, signOut } from "@/lib/auth";
 import { peekCapsuleDraft } from "@/lib/capsule-draft";
 import {
@@ -28,6 +29,7 @@ export default function HomeAuth() {
     setError(null);
     try {
       await signInWithGoogle();
+      trackLogin("Google");
     } catch (err) {
       setError(toAuthErrorMessage(err));
     } finally {
@@ -40,6 +42,7 @@ export default function HomeAuth() {
     setError(null);
     try {
       await signOut();
+      trackLogout();
     } catch (err) {
       setError(
         err instanceof Error ? err.message : "로그아웃에 실패했습니다.",

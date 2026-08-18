@@ -7,6 +7,7 @@ import KeywordChips from "@/components/KeywordChips";
 import AppCanvas from "@/components/AppCanvas";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { trackViewCapsule } from "@/lib/analytics";
 import {
   fetchCapsuleById,
   formatOpenAt,
@@ -42,7 +43,9 @@ export default function CapsuleDetail({ id }: CapsuleDetailProps) {
           return;
         }
         setCapsule(data);
-        setOpened(isCapsuleOpen(data.open_at));
+        const isOpen = isCapsuleOpen(data.open_at);
+        setOpened(isOpen);
+        trackViewCapsule(data.id, !isOpen);
       } catch (err) {
         if (!cancelled) {
           setError(

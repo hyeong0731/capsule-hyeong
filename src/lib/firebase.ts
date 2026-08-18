@@ -28,7 +28,7 @@ export const storage = getStorage(app);
 
 let analyticsPromise: Promise<Analytics | null> | null = null;
 
-/** Analytics only runs in the browser; safe to call from client components. */
+/** Prefer `@next/third-parties` GA4 in the root layout to avoid double-counting. */
 export function getClientAnalytics(): Promise<Analytics | null> {
   if (typeof window === "undefined") {
     return Promise.resolve(null);
