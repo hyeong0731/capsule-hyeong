@@ -16,9 +16,9 @@ export default function AppleIcon() {
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          backgroundColor: "#100e0c",
+          backgroundColor: "#f6efe4",
           backgroundImage:
-            "radial-gradient(circle at 50% 18%, rgba(201,163,106,0.35), transparent 58%)",
+            "radial-gradient(circle at 50% 18%, rgba(244,196,92,0.45), transparent 58%)",
         }}
       >
         <div

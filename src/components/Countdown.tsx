@@ -32,7 +32,7 @@ export default function Countdown({ openAt, compact = false }: CountdownProps) {
         ? `${parts.days}일 ${parts.hours}시간`
         : `${parts.hours}:${String(parts.minutes).padStart(2, "0")}:${String(parts.seconds).padStart(2, "0")}`;
     return (
-      <span className="inline-flex items-center rounded-full border border-white/10 bg-black/45 px-2.5 py-1 text-xs font-medium text-[var(--paper)] backdrop-blur-sm">
+      <span className="inline-flex items-center rounded-full border border-[var(--line)] bg-[var(--panel)] px-2.5 py-1 text-xs font-medium text-[var(--paper)] backdrop-blur-sm">
         D-{parts.days > 0 ? parts.days : "day"} · {label}
       </span>
     );
@@ -48,7 +48,7 @@ export default function Countdown({ openAt, compact = false }: CountdownProps) {
       ].map((item) => (
         <div
           key={item.label}
-          className="rounded-xl border border-[var(--line)] bg-black/30 px-2 py-3"
+          className="rounded-xl border border-[var(--line)] bg-[var(--wash)] px-2 py-3"
         >
           <p className="font-serif text-xl font-semibold tabular-nums text-[var(--gold-soft)]">
             {String(item.value).padStart(2, "0")}

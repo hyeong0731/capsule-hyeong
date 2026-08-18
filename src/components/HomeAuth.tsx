@@ -150,7 +150,7 @@ function UserDashboard({
 
   return (
     <AppCanvas>
-      <header className="border-b border-[var(--line)] bg-black/20 backdrop-blur-md">
+      <header className="border-b border-[var(--line)] bg-[var(--panel)] backdrop-blur-md">
         <div className="mx-auto flex max-w-5xl items-center justify-between px-6 py-4">
           <div>
             <h1 className="text-2xl font-semibold tracking-tight text-[var(--paper)]">
@@ -164,7 +164,7 @@ function UserDashboard({
               <img
                 src={user.photoURL}
                 alt=""
-                className="h-9 w-9 rounded-full ring-1 ring-white/15"
+                className="h-9 w-9 rounded-full ring-1 ring-[var(--line)]"
                 referrerPolicy="no-referrer"
               />
             ) : null}
@@ -292,7 +292,7 @@ function FilterButton({
       onClick={onClick}
       className={`rounded-full px-4 py-1.5 text-sm font-medium transition ${
         active
-          ? "bg-[var(--paper)] text-[#1a140c]"
+          ? "bg-[var(--gold)] text-[#fff8ee]"
           : "border border-[var(--line)] bg-transparent text-[var(--muted)] hover:text-[var(--paper)]"
       }`}
     >

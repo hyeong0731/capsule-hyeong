@@ -27,10 +27,10 @@ export default async function Image() {
           flexDirection: "column",
           justifyContent: "space-between",
           padding: "72px 80px",
-          backgroundColor: "#100e0c",
+          backgroundColor: "#f6efe4",
           backgroundImage:
-            "radial-gradient(ellipse 80% 60% at 50% -10%, rgba(201,163,106,0.28), transparent 58%), radial-gradient(ellipse 45% 40% at 100% 110%, rgba(92,64,42,0.4), transparent 55%)",
-          color: "#f3eadc",
+            "radial-gradient(ellipse 80% 60% at 50% -10%, rgba(244,196,92,0.42), transparent 58%), radial-gradient(ellipse 45% 40% at 100% 110%, rgba(196,146,96,0.22), transparent 55%)",
+          color: "#2c241c",
         }}
       >
         <div
@@ -39,7 +39,7 @@ export default async function Image() {
             alignItems: "center",
             letterSpacing: "0.28em",
             fontSize: 22,
-            color: "#9d9183",
+            color: "#8a7766",
             fontFamily: "Noto Sans KR",
           }}
         >
@@ -71,7 +71,7 @@ export default async function Image() {
             style={{
               marginTop: 18,
               fontSize: 28,
-              color: "#d8ccba",
+              color: "#5a4c40",
               fontFamily: "Noto Sans KR",
               lineHeight: 1.5,
             }}
@@ -85,7 +85,7 @@ export default async function Image() {
             display: "flex",
             justifyContent: "space-between",
             alignItems: "center",
-            color: "#c9a36a",
+            color: "#a6752c",
             fontSize: 24,
             fontFamily: "Noto Sans KR",
           }}
@@ -126,7 +126,7 @@ function CapsuleShape({
         marginRight: 18,
         marginTop: offset,
         borderRadius: 999,
-        backgroundImage: `linear-gradient(180deg, ${color}, #241f19)`,
+        backgroundImage: `linear-gradient(180deg, ${color}, #efe0cc)`,
         boxShadow: `0 18px 40px ${color}55`,
       }}
     />

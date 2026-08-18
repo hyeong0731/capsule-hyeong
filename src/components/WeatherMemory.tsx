@@ -38,7 +38,7 @@ export default function WeatherMemory({
 
   return (
     <section
-      className={`rounded-2xl border border-[var(--line)] bg-black/20 px-5 py-4 ${className}`.trim()}
+      className={`rounded-2xl border border-[var(--line)] bg-[var(--wash)] px-5 py-4 ${className}`.trim()}
     >
       <p className="kicker mb-2">묻은 날의 하늘</p>
       <p className="font-serif text-2xl font-semibold text-[var(--paper)]">

@@ -67,13 +67,13 @@ export const metadata: Metadata = {
   appleWebApp: {
     capable: true,
     title: SITE.name,
-    statusBarStyle: "black-translucent",
+    statusBarStyle: "default",
   },
 };
 
 export const viewport: Viewport = {
-  themeColor: "#100e0c",
-  colorScheme: "dark",
+  themeColor: "#f6efe4",
+  colorScheme: "light",
   width: "device-width",
   initialScale: 1,
 };

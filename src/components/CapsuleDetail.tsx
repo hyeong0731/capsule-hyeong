@@ -75,7 +75,7 @@ export default function CapsuleDetail({ id }: CapsuleDetailProps) {
     return (
       <PageShell>
         <div className="flex flex-col items-center py-12">
-          <div className="mb-4 h-10 w-10 animate-pulse rounded-full bg-white/10" />
+          <div className="mb-4 h-10 w-10 animate-pulse rounded-full bg-[var(--wash)]" />
           <p className="text-sm text-[var(--faint)]">캡슐을 여는 중…</p>
         </div>
       </PageShell>
@@ -166,8 +166,8 @@ function CapsuleIdentity({ capsule }: { capsule: Capsule }) {
       className="mb-8 overflow-hidden rounded-[1.8rem] border border-[var(--line)] px-5 pb-5 pt-6 text-center"
       style={{
         background: capsule.capsule_primary
-          ? `radial-gradient(ellipse at 50% 0%, ${capsule.capsule_primary}2e, transparent 62%), rgba(0,0,0,0.22)`
-          : "rgba(0,0,0,0.22)",
+          ? `radial-gradient(ellipse at 50% 0%, ${capsule.capsule_primary}33, transparent 62%), rgba(255,251,245,0.86)`
+          : "rgba(255,251,245,0.86)",
       }}
     >
       {custom ? (
@@ -204,7 +204,7 @@ function LockedContent({
 }) {
   return (
     <div className="space-y-6">
-      <div className="overflow-hidden rounded-[1.8rem] border border-[var(--line)] bg-black/25 px-6 py-8 text-center">
+      <div className="overflow-hidden rounded-[1.8rem] border border-[var(--line)] bg-[var(--wash)] px-6 py-8 text-center">
         <p className="kicker mb-3">Sealed</p>
         <h2 className="font-serif text-2xl font-semibold text-[var(--paper)]">
           아직 열림 기간이 남았어요
@@ -222,7 +222,7 @@ function LockedContent({
       </div>
 
       {capsule.capsule_images.length > 0 ? (
-        <div className="rounded-2xl border border-[var(--line)] bg-black/20 px-5 py-4">
+        <div className="rounded-2xl border border-[var(--line)] bg-[var(--wash)] px-5 py-4">
           <p className="mb-3 text-center text-xs text-[var(--faint)]">
             사진 {capsule.capsule_images.length}장 · 미리보기 잠김
           </p>
@@ -233,7 +233,7 @@ function LockedContent({
                 key={image.public_url}
                 src={image.public_url}
                 alt=""
-                className="h-16 w-16 rounded-xl object-cover opacity-50 blur-sm ring-1 ring-white/10"
+                className="h-16 w-16 rounded-xl object-cover opacity-50 blur-sm ring-1 ring-[var(--line)]"
               />
             ))}
           </div>
@@ -263,7 +263,7 @@ function OpenedContent({
   return (
     <div className="space-y-6">
       {isDevPreview ? (
-        <p className="rounded-xl border border-dashed border-[var(--line)] bg-black/20 px-4 py-2 text-center text-xs text-[var(--faint)]">
+        <p className="rounded-xl border border-dashed border-[var(--line)] bg-[var(--wash)] px-4 py-2 text-center text-xs text-[var(--faint)]">
           개발 모드 · 바로보기 미리보기
         </p>
       ) : (
@@ -276,7 +276,7 @@ function OpenedContent({
 
       <section>
         <h2 className="kicker mb-3">편지</h2>
-        <div className="relative overflow-hidden rounded-2xl border border-[var(--line)] bg-black/20 px-6 py-5">
+        <div className="relative overflow-hidden rounded-2xl border border-[var(--line)] bg-[var(--wash)] px-6 py-5">
           <p className="relative whitespace-pre-wrap font-serif text-[15px] leading-[1.9] text-[var(--ink-soft)]">
             {capsule.letter}
           </p>
@@ -290,7 +290,7 @@ function OpenedContent({
             {capsule.capsule_images.map((image, index) => (
               <div
                 key={image.public_url}
-                className={`overflow-hidden rounded-2xl ring-1 ring-white/10 ${
+                className={`overflow-hidden rounded-2xl ring-1 ring-[var(--line)] ${
                   index === 0 && capsule.capsule_images.length % 2 !== 0
                     ? "col-span-2 aspect-[2/1]"
                     : "aspect-square"

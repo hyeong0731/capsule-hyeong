@@ -174,7 +174,7 @@ function Metric({
   hint?: string | null;
 }) {
   return (
-    <div className="rounded-2xl border border-white/8 bg-black/20 px-3 py-3 text-center sm:px-4">
+    <div className="rounded-2xl border border-[var(--line)] bg-[var(--wash)] px-3 py-3 text-center sm:px-4">
       <dt className="text-[11px] tracking-wide text-[var(--faint)]">{label}</dt>
       <dd className="mt-1 text-sm font-medium tabular-nums text-[var(--paper)] sm:text-base">
         <span className="block truncate">{value ?? "—"}</span>

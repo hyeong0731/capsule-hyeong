@@ -21,7 +21,7 @@ export default function KeywordChips({
       {keywords.map((word) => (
         <li
           key={word}
-          className="rounded-full border border-white/10 bg-white/5 px-2.5 py-1 text-[11px] tracking-wide"
+          className="rounded-full border border-[var(--line)] bg-[var(--wash)] px-2.5 py-1 text-[11px] tracking-wide"
           style={{ color }}
         >
           {word}

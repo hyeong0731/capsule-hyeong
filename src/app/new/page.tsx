@@ -229,7 +229,7 @@ export default function NewCapsulePage() {
                     />
                   </label>
 
-                  <p className="rounded-2xl border border-[var(--line)] bg-black/20 px-4 py-3 text-sm leading-relaxed text-[var(--muted)]">
+                  <p className="rounded-2xl border border-[var(--line)] bg-[var(--wash)] px-4 py-3 text-sm leading-relaxed text-[var(--muted)]">
                     캡슐을 묻는 순간의 날씨로 그날의 한마디, 키워드,
                     그리고 색과 형태가 다른 캡슐이 만들어집니다.
                   </p>
@@ -270,7 +270,7 @@ export default function NewCapsulePage() {
                           key={url}
                           src={url}
                           alt={`미리보기 ${index + 1}`}
-                          className="h-20 w-20 rounded-2xl object-cover ring-1 ring-white/10"
+                          className="h-20 w-20 rounded-2xl object-cover ring-1 ring-[var(--line)]"
                         />
                       ))}
                     </div>
@@ -309,7 +309,7 @@ function ResultView({ result }: { result: CapsuleResult }) {
         <div
           className="mb-6 rounded-[1.6rem] border border-[var(--line)] px-4 pb-5 pt-6"
           style={{
-            background: `radial-gradient(ellipse at 50% 0%, ${mood.primary}2e, transparent 62%), rgba(0,0,0,0.22)`,
+            background: `radial-gradient(ellipse at 50% 0%, ${mood.primary}33, transparent 62%), rgba(255,251,245,0.86)`,
           }}
         >
           <WeatherCapsule
@@ -345,7 +345,7 @@ function ResultView({ result }: { result: CapsuleResult }) {
         keywords={mood?.keywords}
         accent={mood?.accent}
       />
-      <dl className="mb-8 space-y-3 rounded-2xl border border-[var(--line)] bg-black/20 px-5 py-4 text-left text-sm">
+      <dl className="mb-8 space-y-3 rounded-2xl border border-[var(--line)] bg-[var(--wash)] px-5 py-4 text-left text-sm">
         <div>
           <dt className="text-[var(--faint)]">캡슐 번호</dt>
           <dd className="mt-0.5 break-all font-mono text-[var(--ink-soft)]">
@@ -386,7 +386,7 @@ function ResultView({ result }: { result: CapsuleResult }) {
               key={url}
               src={url}
               alt=""
-              className="h-20 w-20 rounded-2xl object-cover ring-1 ring-white/10"
+              className="h-20 w-20 rounded-2xl object-cover ring-1 ring-[var(--line)]"
             />
           ))}
         </div>

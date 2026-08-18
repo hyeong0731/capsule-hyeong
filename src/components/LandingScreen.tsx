@@ -108,7 +108,7 @@ export default function LandingScreen({
 
           <div className="mt-6">
             {!countReady ? (
-              <div className="mx-auto h-14 w-36 animate-pulse rounded-2xl bg-white/5" />
+              <div className="mx-auto h-14 w-36 animate-pulse rounded-2xl bg-[var(--wash)]" />
             ) : count === 0 ? (
               <p className="text-sm text-[var(--muted)]">
                 아직 묻힌 캡슐이 없어요. 첫 캡슐을 묻어보세요.
@@ -159,7 +159,7 @@ export default function LandingScreen({
               />
             </label>
 
-            <p className="rounded-2xl border border-[var(--line)] bg-black/20 px-4 py-3 text-sm leading-relaxed text-[var(--muted)]">
+            <p className="rounded-2xl border border-[var(--line)] bg-[var(--wash)] px-4 py-3 text-sm leading-relaxed text-[var(--muted)]">
               묻는 순간의 날씨로 그날의 한마디, 키워드, 그리고 색과 형태가 다른
               캡슐이 만들어집니다.
             </p>
@@ -198,7 +198,7 @@ export default function LandingScreen({
                     key={url}
                     src={url}
                     alt={`미리보기 ${index + 1}`}
-                    className="h-20 w-20 rounded-2xl object-cover ring-1 ring-white/10"
+                    className="h-20 w-20 rounded-2xl object-cover ring-1 ring-[var(--line)]"
                   />
                 ))}
               </div>

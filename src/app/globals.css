@@ -1,21 +1,23 @@
 @import "tailwindcss";
 
 :root {
-  --night: #100e0c;
-  --dusk: #171410;
-  --soil: #241f19;
-  --panel: rgba(36, 31, 25, 0.72);
-  --paper: #f3eadc;
-  --ink: #f3eadc;
-  --ink-soft: #d8ccba;
-  --muted: #9d9183;
-  --faint: #6f665c;
-  --line: rgba(243, 234, 220, 0.1);
-  --line-strong: rgba(243, 234, 220, 0.18);
-  --gold: #c9a36a;
-  --gold-soft: #e4d2ae;
-  --copper: #b58862;
-  --danger: #e2a396;
+  --night: #f6efe4;
+  --dusk: #efe4d4;
+  --soil: #e6d8c4;
+  --panel: rgba(255, 251, 245, 0.82);
+  --wash: rgba(90, 62, 36, 0.07);
+  --wash-strong: rgba(90, 62, 36, 0.12);
+  --paper: #2c241c;
+  --ink: #2c241c;
+  --ink-soft: #5a4c40;
+  --muted: #8a7766;
+  --faint: #b09c88;
+  --line: rgba(90, 62, 36, 0.12);
+  --line-strong: rgba(90, 62, 36, 0.22);
+  --gold: #c4923a;
+  --gold-soft: #a6752c;
+  --copper: #c07448;
+  --danger: #c45c4a;
   --background: var(--night);
   --foreground: var(--ink);
 }
@@ -37,7 +39,7 @@
 }
 
 html {
-  color-scheme: dark;
+  color-scheme: light;
 }
 
 body {
@@ -60,9 +62,9 @@ h3,
   min-height: 100%;
   background-color: var(--night);
   background-image:
-    radial-gradient(ellipse 90% 55% at 50% -18%, rgba(201, 163, 106, 0.16), transparent 58%),
-    radial-gradient(ellipse 50% 40% at 100% 110%, rgba(92, 64, 42, 0.28), transparent 55%),
-    radial-gradient(ellipse 45% 35% at 0% 90%, rgba(58, 74, 86, 0.16), transparent 50%);
+    radial-gradient(ellipse 90% 55% at 50% -18%, rgba(244, 196, 92, 0.38), transparent 58%),
+    radial-gradient(ellipse 50% 40% at 100% 110%, rgba(196, 146, 96, 0.18), transparent 55%),
+    radial-gradient(ellipse 45% 35% at 0% 90%, rgba(130, 168, 186, 0.16), transparent 50%);
 }
 
 .app-grain {
@@ -70,15 +72,15 @@ h3,
   position: fixed;
   inset: 0;
   z-index: 0;
-  opacity: 0.22;
-  mix-blend-mode: overlay;
+  opacity: 0.08;
+  mix-blend-mode: multiply;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 }
 
 .panel {
   border: 1px solid var(--line);
   background: var(--panel);
-  box-shadow: 0 24px 60px -32px rgba(0, 0, 0, 0.55);
+  box-shadow: 0 24px 50px -36px rgba(90, 62, 36, 0.35);
   backdrop-filter: blur(18px);
 }
 
@@ -94,7 +96,7 @@ h3,
   width: 100%;
   border-radius: 0.9rem;
   border: 1px solid var(--line-strong);
-  background: rgba(16, 14, 12, 0.45);
+  background: rgba(255, 251, 245, 0.9);
   padding: 0.8rem 1rem;
   font-size: 0.9rem;
   color: var(--ink);
@@ -126,7 +128,7 @@ h3,
   margin-right: 1rem;
   border: 0;
   border-radius: 999px;
-  background: rgba(243, 234, 220, 0.08);
+  background: rgba(196, 146, 58, 0.14);
   padding: 0.5rem 1rem;
   font-size: 0.8rem;
   font-weight: 500;
@@ -145,7 +147,7 @@ h3,
   font-size: 0.875rem;
   font-weight: 600;
   letter-spacing: 0.04em;
-  color: #1a140c;
+  color: #fff8ee;
   transition:
     filter 160ms ease,
     transform 160ms ease;
@@ -195,42 +197,42 @@ h3,
 .weather-panel {
   border: 1px solid var(--line);
   background:
-    linear-gradient(165deg, rgba(201, 163, 106, 0.1), transparent 42%),
-    linear-gradient(180deg, rgba(36, 31, 25, 0.88), rgba(18, 16, 14, 0.92));
+    linear-gradient(165deg, rgba(201, 163, 106, 0.18), transparent 42%),
+    linear-gradient(180deg, rgba(255, 251, 245, 0.94), rgba(247, 238, 224, 0.96));
 }
 
 .weather-panel-sun {
   background:
-    linear-gradient(165deg, rgba(212, 164, 72, 0.22), transparent 46%),
-    linear-gradient(180deg, #2a2216, #14110e);
+    linear-gradient(165deg, rgba(244, 196, 92, 0.38), transparent 46%),
+    linear-gradient(180deg, #fff6e4, #f3e6cf);
 }
 
 .weather-panel-heat {
   background:
-    linear-gradient(165deg, rgba(196, 92, 48, 0.22), transparent 48%),
-    linear-gradient(180deg, #2b1b14, #14110e);
+    linear-gradient(165deg, rgba(232, 130, 80, 0.28), transparent 48%),
+    linear-gradient(180deg, #ffe8d8, #f4d9c8);
 }
 
 .weather-panel-cloud {
   background:
-    linear-gradient(165deg, rgba(148, 160, 176, 0.16), transparent 48%),
-    linear-gradient(180deg, #1f2328, #14110e);
+    linear-gradient(165deg, rgba(170, 186, 204, 0.3), transparent 48%),
+    linear-gradient(180deg, #f0f3f7, #e4e8ee);
 }
 
 .weather-panel-overcast {
   background:
-    linear-gradient(165deg, rgba(110, 118, 128, 0.2), transparent 48%),
-    linear-gradient(180deg, #1b1d20, #14110e);
+    linear-gradient(165deg, rgba(140, 148, 158, 0.24), transparent 48%),
+    linear-gradient(180deg, #eceef1, #e0e2e6);
 }
 
 .weather-panel-rain {
   background:
-    linear-gradient(165deg, rgba(78, 112, 138, 0.28), transparent 50%),
-    linear-gradient(180deg, #172028, #121014);
+    linear-gradient(165deg, rgba(110, 160, 196, 0.32), transparent 50%),
+    linear-gradient(180deg, #e4f0f7, #d5e4ee);
 }
 
 .weather-panel-snow {
   background:
-    linear-gradient(165deg, rgba(186, 204, 224, 0.16), transparent 48%),
-    linear-gradient(180deg, #1c2228, #14110e);
+    linear-gradient(165deg, rgba(200, 216, 232, 0.48), transparent 48%),
+    linear-gradient(180deg, #f5f8fb, #e6eef4);
 }

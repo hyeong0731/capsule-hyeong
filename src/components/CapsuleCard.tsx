@@ -28,7 +28,7 @@ export default function CapsuleCard({ capsule, isMine }: CapsuleCardProps) {
         style={
           custom && capsule.capsule_primary
             ? {
-                background: `radial-gradient(ellipse at 50% 20%, ${capsule.capsule_primary}33, transparent 58%), linear-gradient(180deg, #1c1914, #12100e)`,
+                background: `radial-gradient(ellipse at 50% 20%, ${capsule.capsule_primary}40, transparent 58%), linear-gradient(180deg, #fff6ea, #efe0cc)`,
               }
             : undefined
         }
@@ -59,7 +59,7 @@ export default function CapsuleCard({ capsule, isMine }: CapsuleCardProps) {
           <Countdown key={capsule.open_at} openAt={capsule.open_at} compact />
         </div>
         {isMine ? (
-          <span className="absolute right-3 top-3 rounded-full border border-white/10 bg-black/40 px-2 py-0.5 text-[10px] font-medium text-[var(--paper)]">
+          <span className="absolute right-3 top-3 rounded-full border border-[var(--line)] bg-[var(--panel)] px-2 py-0.5 text-[10px] font-medium text-[var(--paper)]">
             내 캡슐
           </span>
         ) : null}

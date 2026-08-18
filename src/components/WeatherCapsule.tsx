@@ -48,7 +48,7 @@ export default function WeatherCapsule({
     <div className={`relative mx-auto ${wide ? "w-40" : "w-24"} ${className}`.trim()}>
       <svg
         viewBox="0 0 160 220"
-        className={`h-auto w-full drop-shadow-[0_18px_30px_rgba(0,0,0,0.45)] ${wide ? "animate-[capsule-float_4.5s_ease-in-out_infinite]" : ""}`}
+        className={`h-auto w-full drop-shadow-[0_16px_24px_rgba(90,62,36,0.22)] ${wide ? "animate-[capsule-float_4.5s_ease-in-out_infinite]" : ""}`}
         role="img"
         aria-label={FORM_LABEL[resolved]}
       >
