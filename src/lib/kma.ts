@@ -35,10 +35,12 @@ function getServiceKey(): string {
   if (!raw) {
     throw new Error("기상청 API 키가 설정되지 않았습니다.");
   }
+  // Some hosts treat `+` in env values as a space; KMA keys are base64-like.
+  const normalized = raw.replace(/ /g, "+");
   try {
-    return decodeURIComponent(raw);
+    return decodeURIComponent(normalized);
   } catch {
-    return raw;
+    return normalized;
   }
 }
 
@@ -264,6 +266,25 @@ export async function fetchCurrentWeather(
   lat: number,
   lon: number,
 ): Promise<WeatherSnapshot> {
+  if (process.env.KMA_SERVICE_KEY?.trim()) {
+    try {
+      return await fetchKmaWeather(lat, lon);
+    } catch (err) {
+      const fallback = await fetchOpenMeteoWeather(lat, lon).catch(() => null);
+      if (fallback) return fallback;
+      throw err;
+    }
+  }
+
+  const fallback = await fetchOpenMeteoWeather(lat, lon).catch(() => null);
+  if (fallback) return fallback;
+  throw new Error("기상청 API 키가 설정되지 않았습니다.");
+}
+
+async function fetchKmaWeather(
+  lat: number,
+  lon: number,
+): Promise<WeatherSnapshot> {
   const { nx, ny } = latLonToGrid(lat, lon);
   const [ncstItems, fcstItems] = await Promise.all([
     fetchNcstItems(nx, ny),
@@ -301,5 +322,83 @@ export async function fetchCurrentWeather(
     rainfall,
     windSpeed,
     windDirection,
+  };
+}
+
+const OPEN_METEO_CODES: Record<number, string> = {
+  0: "맑음",
+  1: "맑음",
+  2: "구름많음",
+  3: "흐림",
+  45: "흐림",
+  48: "흐림",
+  51: "빗방울",
+  53: "비",
+  55: "비",
+  56: "비",
+  57: "비",
+  61: "비",
+  63: "비",
+  65: "비",
+  66: "비",
+  67: "비",
+  71: "눈",
+  73: "눈",
+  75: "눈",
+  77: "눈",
+  80: "비",
+  81: "비",
+  82: "비",
+  85: "눈",
+  86: "눈",
+  95: "비",
+  96: "비",
+  99: "비",
+};
+
+async function fetchOpenMeteoWeather(
+  lat: number,
+  lon: number,
+): Promise<WeatherSnapshot> {
+  const params = new URLSearchParams({
+    latitude: String(lat),
+    longitude: String(lon),
+    current:
+      "temperature_2m,relative_humidity_2m,precipitation,weather_code,wind_speed_10m,wind_direction_10m",
+    wind_speed_unit: "ms",
+    timezone: "Asia/Seoul",
+  });
+  const res = await fetch(`https://api.open-meteo.com/v1/forecast?${params}`, {
+    cache: "no-store",
+    signal: AbortSignal.timeout(5000),
+  });
+  if (!res.ok) {
+    throw new Error("대체 날씨 조회에 실패했습니다.");
+  }
+
+  const data = (await res.json()) as {
+    current?: {
+      temperature_2m?: number;
+      relative_humidity_2m?: number;
+      precipitation?: number;
+      weather_code?: number;
+      wind_speed_10m?: number;
+      wind_direction_10m?: number;
+    };
+  };
+  const current = data.current;
+  if (!current) {
+    throw new Error("대체 날씨 데이터가 비어 있습니다.");
+  }
+
+  const code = current.weather_code;
+  return {
+    condition:
+      (code != null ? OPEN_METEO_CODES[code] : undefined) ?? "알 수 없음",
+    temperature: parseNumber(String(current.temperature_2m ?? "")),
+    humidity: parseNumber(String(current.relative_humidity_2m ?? "")),
+    rainfall: parseNumber(String(current.precipitation ?? "")),
+    windSpeed: parseNumber(String(current.wind_speed_10m ?? "")),
+    windDirection: parseNumber(String(current.wind_direction_10m ?? "")),
   };
 }

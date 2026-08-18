@@ -20,7 +20,7 @@ export default function Countdown({ openAt, compact = false }: CountdownProps) {
 
   if (parts.isOpen) {
     return (
-      <span className="inline-flex items-center rounded-full bg-teal-100 px-2.5 py-1 text-xs font-medium text-teal-700">
+      <span className="inline-flex items-center rounded-full border border-[var(--gold)]/30 bg-[var(--gold)]/15 px-2.5 py-1 text-xs font-medium text-[var(--gold-soft)]">
         열람 가능
       </span>
     );
@@ -32,7 +32,7 @@ export default function Countdown({ openAt, compact = false }: CountdownProps) {
         ? `${parts.days}일 ${parts.hours}시간`
         : `${parts.hours}:${String(parts.minutes).padStart(2, "0")}:${String(parts.seconds).padStart(2, "0")}`;
     return (
-      <span className="inline-flex items-center rounded-full bg-amber-100 px-2.5 py-1 text-xs font-medium text-amber-800">
+      <span className="inline-flex items-center rounded-full border border-white/10 bg-black/45 px-2.5 py-1 text-xs font-medium text-[var(--paper)] backdrop-blur-sm">
         D-{parts.days > 0 ? parts.days : "day"} · {label}
       </span>
     );
@@ -48,12 +48,12 @@ export default function Countdown({ openAt, compact = false }: CountdownProps) {
       ].map((item) => (
         <div
           key={item.label}
-          className="rounded-xl bg-slate-800 px-2 py-3 text-slate-50"
+          className="rounded-xl border border-[var(--line)] bg-black/30 px-2 py-3"
         >
-          <p className="text-xl font-semibold tabular-nums">
+          <p className="font-serif text-xl font-semibold tabular-nums text-[var(--gold-soft)]">
             {String(item.value).padStart(2, "0")}
           </p>
-          <p className="text-[10px] uppercase tracking-wide text-slate-400">
+          <p className="text-[10px] tracking-wide text-[var(--faint)]">
             {item.label}
           </p>
         </div>

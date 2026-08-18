@@ -10,7 +10,7 @@ export default function KeywordChips({
   className?: string;
 }) {
   if (!keywords || keywords.length === 0) return null;
-  const color = accent || "#64748b";
+  const color = accent || "var(--gold-soft)";
 
   return (
     <ul
@@ -21,13 +21,10 @@ export default function KeywordChips({
       {keywords.map((word) => (
         <li
           key={word}
-          className="rounded-full px-2.5 py-1 text-[11px] font-medium"
-          style={{
-            backgroundColor: `${color}18`,
-            color,
-          }}
+          className="rounded-full border border-white/10 bg-white/5 px-2.5 py-1 text-[11px] tracking-wide"
+          style={{ color }}
         >
-          #{word}
+          {word}
         </li>
       ))}
     </ul>

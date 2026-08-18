@@ -3,6 +3,7 @@
 import CapsuleCard from "@/components/CapsuleCard";
 import LandingScreen from "@/components/LandingScreen";
 import LiveWeather from "@/components/LiveWeather";
+import AppCanvas from "@/components/AppCanvas";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
@@ -138,21 +139,21 @@ function UserDashboard({
 
   if (continuingDraft) {
     return (
-      <div className="flex min-h-full items-center justify-center bg-gradient-to-b from-slate-100 via-sky-50 to-teal-50/50 px-6">
-        <p className="text-sm text-slate-500">작성하던 캡슐으로 이어가는 중…</p>
-      </div>
+      <AppCanvas className="flex items-center justify-center px-6">
+        <p className="text-sm text-[var(--muted)]">작성하던 캡슐으로 이어가는 중…</p>
+      </AppCanvas>
     );
   }
 
   return (
-    <div className="min-h-full bg-gradient-to-b from-slate-100 via-sky-50 to-teal-50/50">
-      <header className="border-b border-white/60 bg-white/50 backdrop-blur-sm">
+    <AppCanvas>
+      <header className="border-b border-[var(--line)] bg-black/20 backdrop-blur-md">
         <div className="mx-auto flex max-w-5xl items-center justify-between px-6 py-4">
           <div>
-            <h1 className="text-2xl font-semibold tracking-tight text-slate-800">
+            <h1 className="text-2xl font-semibold tracking-tight text-[var(--paper)]">
               캡슐 미
             </h1>
-            <p className="text-sm text-slate-500">내가 묻은 캡슐</p>
+            <p className="text-sm text-[var(--muted)]">내가 묻은 캡슐</p>
           </div>
           <div className="flex items-center gap-3">
             {user.photoURL ? (
@@ -160,21 +161,21 @@ function UserDashboard({
               <img
                 src={user.photoURL}
                 alt=""
-                className="h-9 w-9 rounded-full"
+                className="h-9 w-9 rounded-full ring-1 ring-white/15"
                 referrerPolicy="no-referrer"
               />
             ) : null}
             <div className="hidden text-right sm:block">
-              <p className="text-sm font-medium text-slate-800">
+              <p className="text-sm font-medium text-[var(--paper)]">
                 {user.displayName ?? "사용자"}
               </p>
-              <p className="text-xs text-slate-500">{user.email}</p>
+              <p className="text-xs text-[var(--muted)]">{user.email}</p>
             </div>
             <button
               type="button"
               onClick={onSignOut}
               disabled={busy}
-              className="text-sm text-slate-500 hover:text-slate-700 disabled:opacity-50"
+              className="btn-ghost disabled:opacity-50"
             >
               로그아웃
             </button>
@@ -187,8 +188,8 @@ function UserDashboard({
 
         <div className="mb-8 grid grid-cols-3 gap-3">
           <StatCard label="전체" value={stats.total} />
-          <StatCard label="잠금" value={stats.locked} accent="amber" />
-          <StatCard label="열림" value={stats.open} accent="teal" />
+          <StatCard label="잠금" value={stats.locked} tone="copper" />
+          <StatCard label="열림" value={stats.open} tone="gold" />
         </div>
 
         <div className="mb-6 flex flex-wrap items-center justify-between gap-4">
@@ -212,26 +213,20 @@ function UserDashboard({
               열림
             </FilterButton>
           </div>
-          <Link
-            href="/new"
-            className="inline-flex items-center justify-center rounded-full bg-slate-800 px-5 py-2.5 text-sm font-medium text-white transition hover:bg-slate-700"
-          >
+          <Link href="/new" className="btn-primary px-5 py-2.5">
             + 캡슐 묻기
           </Link>
         </div>
 
         {loadingCapsules ? (
-          <p className="py-16 text-center text-sm text-slate-400">
+          <p className="py-16 text-center text-sm text-[var(--faint)]">
             캡슐 불러오는 중…
           </p>
         ) : filtered.length === 0 ? (
           <EmptyState
             filter={filter}
             action={
-              <Link
-                href="/new"
-                className="inline-flex rounded-full bg-slate-800 px-6 py-2.5 text-sm font-medium text-white hover:bg-slate-700"
-              >
+              <Link href="/new" className="btn-primary">
                 캡슐 묻으러 가기
               </Link>
             }
@@ -245,36 +240,36 @@ function UserDashboard({
         )}
 
         {error ? (
-          <p className="mt-6 text-center text-sm text-rose-600" role="alert">
+          <p className="mt-6 text-center text-sm text-[var(--danger)]" role="alert">
             {error}
           </p>
         ) : null}
       </main>
-    </div>
+    </AppCanvas>
   );
 }
 
 function StatCard({
   label,
   value,
-  accent = "slate",
+  tone = "ink",
 }: {
   label: string;
   value: number;
-  accent?: "slate" | "amber" | "teal";
+  tone?: "ink" | "copper" | "gold";
 }) {
-  const colors = {
-    slate: "bg-white/80 text-slate-800",
-    amber: "bg-amber-50 text-amber-900",
-    teal: "bg-teal-50 text-teal-900",
+  const valueClass = {
+    ink: "text-[var(--paper)]",
+    copper: "text-[var(--copper)]",
+    gold: "text-[var(--gold-soft)]",
   };
 
   return (
-    <div
-      className={`rounded-2xl border border-white/70 px-4 py-4 shadow-sm ${colors[accent]}`}
-    >
-      <p className="text-xs text-slate-500">{label}</p>
-      <p className="mt-1 text-2xl font-semibold tabular-nums">{value}</p>
+    <div className="panel rounded-2xl px-4 py-4">
+      <p className="kicker">{label}</p>
+      <p className={`mt-2 font-serif text-3xl font-semibold tabular-nums ${valueClass[tone]}`}>
+        {value}
+      </p>
     </div>
   );
 }
@@ -294,8 +289,8 @@ function FilterButton({
       onClick={onClick}
       className={`rounded-full px-4 py-1.5 text-sm font-medium transition ${
         active
-          ? "bg-slate-800 text-white"
-          : "bg-white/80 text-slate-600 hover:bg-white"
+          ? "bg-[var(--paper)] text-[#1a140c]"
+          : "border border-[var(--line)] bg-transparent text-[var(--muted)] hover:text-[var(--paper)]"
       }`}
     >
       {children}
@@ -317,9 +312,9 @@ function EmptyState({
   };
 
   return (
-    <div className="rounded-3xl border border-dashed border-slate-200 bg-white/50 px-8 py-16 text-center">
-      <p className="mb-2 text-4xl">🫙</p>
-      <p className="mb-6 text-slate-600">{messages[filter]}</p>
+    <div className="panel rounded-[2rem] px-8 py-16 text-center">
+      <p className="kicker mb-4">Empty</p>
+      <p className="mb-6 text-[var(--ink-soft)]">{messages[filter]}</p>
       {action}
     </div>
   );

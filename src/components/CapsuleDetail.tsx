@@ -4,6 +4,7 @@ import Countdown from "@/components/Countdown";
 import WeatherMemory from "@/components/WeatherMemory";
 import WeatherCapsule from "@/components/WeatherCapsule";
 import KeywordChips from "@/components/KeywordChips";
+import AppCanvas from "@/components/AppCanvas";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import {
@@ -71,8 +72,8 @@ export default function CapsuleDetail({ id }: CapsuleDetailProps) {
     return (
       <PageShell>
         <div className="flex flex-col items-center py-12">
-          <div className="mb-4 h-10 w-10 animate-pulse rounded-full bg-slate-200" />
-          <p className="text-sm text-slate-400">캡슐을 여는 중…</p>
+          <div className="mb-4 h-10 w-10 animate-pulse rounded-full bg-white/10" />
+          <p className="text-sm text-[var(--faint)]">캡슐을 여는 중…</p>
         </div>
       </PageShell>
     );
@@ -82,14 +83,11 @@ export default function CapsuleDetail({ id }: CapsuleDetailProps) {
     return (
       <PageShell>
         <div className="py-8 text-center">
-          <p className="mb-2 text-4xl">🫙</p>
-          <p className="mb-6 text-slate-600">
+          <p className="kicker mb-3">Missing</p>
+          <p className="mb-6 text-[var(--ink-soft)]">
             {error ?? "캡슐을 찾을 수 없습니다."}
           </p>
-          <Link
-            href="/"
-            className="text-sm text-slate-500 underline-offset-4 hover:underline"
-          >
+          <Link href="/" className="btn-ghost">
             ← 대시보드로
           </Link>
         </div>
@@ -103,19 +101,17 @@ export default function CapsuleDetail({ id }: CapsuleDetailProps) {
     <PageShell>
       <Link
         href="/"
-        className="mb-6 inline-flex items-center gap-1 text-sm text-slate-400 transition hover:text-slate-600"
+        className="btn-ghost mb-6 inline-flex items-center gap-1"
       >
         ← 대시보드
       </Link>
 
       <header className="mb-8 text-center">
-        <p className="mb-1 text-xs font-medium uppercase tracking-widest text-slate-400">
-          To.
-        </p>
-        <h1 className="text-3xl font-semibold tracking-tight text-slate-800">
+        <p className="kicker mb-3">To.</p>
+        <h1 className="text-4xl font-semibold tracking-tight text-[var(--paper)]">
           {capsule.recipient}
         </h1>
-        <p className="mt-2 text-sm text-slate-500">
+        <p className="mt-2 text-sm text-[var(--muted)]">
           {formatOpenAt(capsule.open_at)}에 열립니다
         </p>
       </header>
@@ -138,11 +134,9 @@ export default function CapsuleDetail({ id }: CapsuleDetailProps) {
         />
       )}
 
-      <footer className="mt-10 border-t border-slate-100 pt-6">
-        <p className="text-center text-[11px] text-slate-400">
-          캡슐 번호
-        </p>
-        <p className="mt-1 break-all text-center font-mono text-xs text-slate-500">
+      <footer className="mt-10 border-t border-[var(--line)] pt-6">
+        <p className="kicker text-center">캡슐 번호</p>
+        <p className="mt-2 break-all text-center font-mono text-xs text-[var(--faint)]">
           {capsule.id}
         </p>
       </footer>
@@ -166,11 +160,11 @@ function CapsuleIdentity({ capsule }: { capsule: Capsule }) {
 
   return (
     <div
-      className="mb-8 overflow-hidden rounded-3xl px-5 pb-5 pt-6 text-center"
+      className="mb-8 overflow-hidden rounded-[1.8rem] border border-[var(--line)] px-5 pb-5 pt-6 text-center"
       style={{
-        background: capsule.capsule_secondary
-          ? `linear-gradient(180deg, ${capsule.capsule_secondary}, #ffffff)`
-          : undefined,
+        background: capsule.capsule_primary
+          ? `radial-gradient(ellipse at 50% 0%, ${capsule.capsule_primary}2e, transparent 62%), rgba(0,0,0,0.22)`
+          : "rgba(0,0,0,0.22)",
       }}
     >
       {custom ? (
@@ -182,17 +176,15 @@ function CapsuleIdentity({ capsule }: { capsule: Capsule }) {
         />
       ) : null}
       {formLabel ? (
-        <p className="mt-2 text-xs font-medium" style={{ color: capsule.capsule_accent ?? "#64748b" }}>
-          {formLabel}
-        </p>
+        <p className="kicker mt-3 normal-case tracking-[0.16em]">{formLabel}</p>
       ) : null}
       {capsule.mood_line ? (
-        <p className="mt-3 text-base font-medium leading-relaxed text-slate-700">
+        <p className="mt-3 font-serif text-lg font-medium leading-relaxed text-[var(--paper)]">
           “{capsule.mood_line}”
         </p>
       ) : null}
       <KeywordChips
-        className="mt-3"
+        className="mt-4"
         keywords={capsule.keywords}
         accent={capsule.capsule_accent}
       />
@@ -209,30 +201,26 @@ function LockedContent({
 }) {
   return (
     <div className="space-y-6">
-      <div className="overflow-hidden rounded-3xl border border-amber-100 bg-gradient-to-b from-amber-50 to-orange-50/60 px-6 py-8 text-center shadow-inner">
-        <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-amber-100/80 text-3xl">
-          🔒
-        </div>
-        <h2 className="text-lg font-semibold text-amber-950">
+      <div className="overflow-hidden rounded-[1.8rem] border border-[var(--line)] bg-black/25 px-6 py-8 text-center">
+        <p className="kicker mb-3">Sealed</p>
+        <h2 className="font-serif text-2xl font-semibold text-[var(--paper)]">
           아직 열림 기간이 남았어요
         </h2>
-        <p className="mt-2 text-sm leading-relaxed text-amber-900/70">
+        <p className="mt-2 text-sm leading-relaxed text-[var(--muted)]">
           편지와 사진은 열람일까지 잠겨 있어요.
           <br />
           키워드만 보고 어떤 날이었는지 떠올려 보세요.
         </p>
 
         <div className="mt-8">
-          <p className="mb-3 text-xs font-medium uppercase tracking-wider text-amber-800/60">
-            열람까지
-          </p>
+          <p className="kicker mb-3">열람까지</p>
           <Countdown key={capsule.open_at} openAt={capsule.open_at} />
         </div>
       </div>
 
       {capsule.capsule_images.length > 0 ? (
-        <div className="rounded-2xl border border-slate-100 bg-slate-50/80 px-5 py-4">
-          <p className="mb-3 text-center text-xs text-slate-400">
+        <div className="rounded-2xl border border-[var(--line)] bg-black/20 px-5 py-4">
+          <p className="mb-3 text-center text-xs text-[var(--faint)]">
             사진 {capsule.capsule_images.length}장 · 미리보기 잠김
           </p>
           <div className="flex justify-center gap-2">
@@ -242,7 +230,7 @@ function LockedContent({
                 key={image.public_url}
                 src={image.public_url}
                 alt=""
-                className="h-16 w-16 rounded-xl object-cover opacity-60 blur-sm ring-1 ring-slate-200"
+                className="h-16 w-16 rounded-xl object-cover opacity-50 blur-sm ring-1 ring-white/10"
               />
             ))}
           </div>
@@ -253,7 +241,7 @@ function LockedContent({
         <button
           type="button"
           onClick={onDevPreview}
-          className="mx-auto block text-xs text-slate-300 underline-offset-2 transition hover:text-slate-400 hover:underline"
+          className="mx-auto block text-xs text-[var(--faint)] underline-offset-2 transition hover:text-[var(--muted)] hover:underline"
         >
           바로보기
         </button>
@@ -272,27 +260,21 @@ function OpenedContent({
   return (
     <div className="space-y-6">
       {isDevPreview ? (
-        <p className="rounded-xl border border-dashed border-slate-200 bg-slate-50 px-4 py-2 text-center text-xs text-slate-400">
+        <p className="rounded-xl border border-dashed border-[var(--line)] bg-black/20 px-4 py-2 text-center text-xs text-[var(--faint)]">
           개발 모드 · 바로보기 미리보기
         </p>
       ) : (
         <div className="flex justify-center">
-          <span className="inline-flex items-center gap-1.5 rounded-full bg-teal-100 px-4 py-1.5 text-sm font-medium text-teal-800">
-            <span className="text-base">✨</span>
+          <span className="inline-flex items-center rounded-full border border-[var(--gold)]/30 bg-[var(--gold)]/12 px-4 py-1.5 text-sm font-medium text-[var(--gold-soft)]">
             캡슐이 열렸어요
           </span>
         </div>
       )}
 
       <section>
-        <h2 className="mb-3 flex items-center gap-2 text-sm font-medium text-slate-500">
-          <span className="text-base">💌</span> 편지
-        </h2>
-        <div className="relative overflow-hidden rounded-2xl border border-slate-100 bg-gradient-to-br from-white to-slate-50 px-6 py-5 shadow-sm">
-          <div className="pointer-events-none absolute -right-4 -top-4 text-6xl opacity-[0.06]">
-            ✉️
-          </div>
-          <p className="relative whitespace-pre-wrap text-sm leading-[1.8] text-slate-700">
+        <h2 className="kicker mb-3">편지</h2>
+        <div className="relative overflow-hidden rounded-2xl border border-[var(--line)] bg-black/20 px-6 py-5">
+          <p className="relative whitespace-pre-wrap font-serif text-[15px] leading-[1.9] text-[var(--ink-soft)]">
             {capsule.letter}
           </p>
         </div>
@@ -300,14 +282,12 @@ function OpenedContent({
 
       {capsule.capsule_images.length > 0 ? (
         <section>
-          <h2 className="mb-3 flex items-center gap-2 text-sm font-medium text-slate-500">
-            <span className="text-base">📷</span> 사진 ({capsule.capsule_images.length})
-          </h2>
+          <h2 className="kicker mb-3">사진 ({capsule.capsule_images.length})</h2>
           <div className="grid grid-cols-2 gap-2.5">
             {capsule.capsule_images.map((image, index) => (
               <div
                 key={image.public_url}
-                className={`overflow-hidden rounded-2xl ring-1 ring-slate-200 ${
+                className={`overflow-hidden rounded-2xl ring-1 ring-white/10 ${
                   index === 0 && capsule.capsule_images.length % 2 !== 0
                     ? "col-span-2 aspect-[2/1]"
                     : "aspect-square"
@@ -330,10 +310,10 @@ function OpenedContent({
 
 function PageShell({ children }: { children: React.ReactNode }) {
   return (
-    <div className="min-h-full bg-gradient-to-b from-slate-100 via-sky-50 to-teal-50/50 px-6 py-10 sm:py-14">
-      <main className="mx-auto w-full max-w-lg rounded-3xl border border-white/70 bg-white/80 px-7 py-9 shadow-[0_24px_60px_-28px_rgba(30,58,95,0.35)] backdrop-blur-sm sm:px-9 sm:py-11">
+    <AppCanvas className="px-6 py-10 sm:py-14">
+      <main className="panel mx-auto w-full max-w-lg rounded-[2rem] px-7 py-9 sm:px-9 sm:py-11">
         {children}
       </main>
-    </div>
+    </AppCanvas>
   );
 }

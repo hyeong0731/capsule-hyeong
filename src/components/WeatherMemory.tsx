@@ -1,7 +1,6 @@
 import {
   formatHumidity,
   formatTemperature,
-  weatherEmoji,
 } from "@/lib/weather";
 
 type WeatherMemoryProps = {
@@ -28,8 +27,7 @@ export default function WeatherMemory({
 
   if (compact) {
     return (
-      <span className={`inline-flex items-center gap-1 text-xs text-slate-500 ${className}`.trim()}>
-        <span aria-hidden>{weatherEmoji(condition)}</span>
+      <span className={`inline-flex items-center gap-1 text-xs text-[var(--muted)] ${className}`.trim()}>
         <span>
           {label}
           {temp ? ` ${temp}` : ""}
@@ -40,19 +38,14 @@ export default function WeatherMemory({
 
   return (
     <section
-      className={`rounded-2xl border border-sky-100 bg-gradient-to-br from-sky-50 to-white px-5 py-4 ${className}`.trim()}
+      className={`rounded-2xl border border-[var(--line)] bg-black/20 px-5 py-4 ${className}`.trim()}
     >
-      <p className="mb-1 text-xs font-medium uppercase tracking-wider text-sky-700/70">
-        묻은 날의 하늘
-      </p>
-      <p className="text-lg font-semibold text-slate-800">
-        <span className="mr-1.5" aria-hidden>
-          {weatherEmoji(condition)}
-        </span>
+      <p className="kicker mb-2">묻은 날의 하늘</p>
+      <p className="font-serif text-2xl font-semibold text-[var(--paper)]">
         {label}
       </p>
       {parts.length > 0 ? (
-        <p className="mt-1 text-sm text-slate-500">{parts.join(" · ")}</p>
+        <p className="mt-1 text-sm text-[var(--muted)]">{parts.join(" · ")}</p>
       ) : null}
     </section>
   );

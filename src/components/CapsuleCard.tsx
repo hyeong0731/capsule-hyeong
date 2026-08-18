@@ -21,14 +21,14 @@ export default function CapsuleCard({ capsule, isMine }: CapsuleCardProps) {
   return (
     <Link
       href={`/capsule/${capsule.id}`}
-      className="group flex flex-col overflow-hidden rounded-2xl border border-white/70 bg-white/80 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
+      className="panel group flex flex-col overflow-hidden rounded-[1.6rem] transition duration-300 hover:-translate-y-1 hover:border-[var(--line-strong)]"
     >
       <div
-        className="relative aspect-[4/3] bg-slate-100"
+        className="relative aspect-[4/3] bg-[var(--soil)]"
         style={
-          custom && capsule.capsule_secondary
+          custom && capsule.capsule_primary
             ? {
-                background: `linear-gradient(180deg, ${capsule.capsule_secondary}, #f8fafc)`,
+                background: `radial-gradient(ellipse at 50% 20%, ${capsule.capsule_primary}33, transparent 58%), linear-gradient(180deg, #1c1914, #12100e)`,
               }
             : undefined
         }
@@ -51,15 +51,15 @@ export default function CapsuleCard({ capsule, isMine }: CapsuleCardProps) {
             className={`h-full w-full object-cover transition ${opened ? "" : "blur-sm"}`}
           />
         ) : (
-          <div className="flex h-full items-center justify-center text-4xl text-slate-300">
-            ✉️
+          <div className="flex h-full items-center justify-center text-sm tracking-widest text-[var(--faint)]">
+            CAPSULE
           </div>
         )}
         <div className="absolute left-3 top-3">
           <Countdown key={capsule.open_at} openAt={capsule.open_at} compact />
         </div>
         {isMine ? (
-          <span className="absolute right-3 top-3 rounded-full bg-slate-800/80 px-2 py-0.5 text-[10px] font-medium text-white">
+          <span className="absolute right-3 top-3 rounded-full border border-white/10 bg-black/40 px-2 py-0.5 text-[10px] font-medium text-[var(--paper)]">
             내 캡슐
           </span>
         ) : null}
@@ -67,14 +67,16 @@ export default function CapsuleCard({ capsule, isMine }: CapsuleCardProps) {
 
       <div className="flex flex-1 flex-col gap-2 p-4">
         <div className="flex items-start justify-between gap-2">
-          <h3 className="font-semibold text-slate-800">{capsule.recipient}</h3>
+          <h3 className="font-serif text-lg font-semibold text-[var(--paper)]">
+            {capsule.recipient}
+          </h3>
           {capsule.imageCount > 0 ? (
-            <span className="shrink-0 text-xs text-slate-400">
-              📷 {capsule.imageCount}
+            <span className="shrink-0 text-xs text-[var(--faint)]">
+              {capsule.imageCount}장
             </span>
           ) : null}
         </div>
-        <p className="text-xs text-slate-500">
+        <p className="text-xs text-[var(--muted)]">
           {opened ? "열람일 도달" : "열람까지"} · {formatOpenAt(capsule.open_at)}
         </p>
         <WeatherMemory

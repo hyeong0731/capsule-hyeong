@@ -9,13 +9,13 @@ import {
   formatHumidity,
   formatTemperature,
   readDeviceLocation,
-  weatherEmoji,
   type WeatherSnapshot,
 } from "@/lib/weather";
 import { consumeCapsuleDraft } from "@/lib/capsule-draft";
 import { fetchCapsuleMood, FORM_LABEL, type CapsuleMood } from "@/lib/capsule-mood";
 import WeatherCapsule from "@/components/WeatherCapsule";
 import KeywordChips from "@/components/KeywordChips";
+import AppCanvas from "@/components/AppCanvas";
 
 const BUCKET = "capsule-hyeong";
 
@@ -178,30 +178,27 @@ export default function NewCapsulePage() {
   }
 
   return (
-    <div className="min-h-full bg-gradient-to-b from-slate-100 via-sky-50 to-teal-50/50 px-6 py-12">
+    <AppCanvas className="px-6 py-12">
       <main className="mx-auto w-full max-w-lg">
-        <Link
-          href="/"
-          className="mb-6 inline-block text-sm text-slate-500 transition hover:text-slate-700"
-        >
+        <Link href="/" className="btn-ghost mb-6 inline-block">
           ← 홈으로
         </Link>
 
-        <div className="rounded-3xl border border-white/70 bg-white/75 px-8 py-10 shadow-[0_24px_60px_-28px_rgba(30,58,95,0.35)] backdrop-blur-sm">
+        <div className="panel rounded-[2rem] px-8 py-10">
           {result ? (
             <ResultView result={result} />
           ) : (
             <>
-              <h1 className="mb-8 text-2xl font-semibold tracking-tight text-slate-800">
+              <h1 className="mb-8 text-3xl font-semibold tracking-tight text-[var(--paper)]">
                 캡슐 묻기
               </h1>
 
               {!ready ? (
-                <p className="text-sm text-slate-400">불러오는 중…</p>
+                <p className="text-sm text-[var(--faint)]">불러오는 중…</p>
               ) : (
                 <form onSubmit={handleSubmit} className="flex flex-col gap-6">
                   <label className="flex flex-col gap-2 text-left">
-                    <span className="text-sm font-medium text-slate-700">
+                    <span className="text-sm font-medium text-[var(--ink-soft)]">
                       받는 사람
                     </span>
                     <input
@@ -211,12 +208,12 @@ export default function NewCapsulePage() {
                       required
                       disabled={submitting}
                       placeholder="이름"
-                      className="rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-800 outline-none transition focus:border-slate-400 focus:ring-2 focus:ring-slate-200 disabled:opacity-50"
+                      className="field"
                     />
                   </label>
 
                   <label className="flex flex-col gap-2 text-left">
-                    <span className="text-sm font-medium text-slate-700">
+                    <span className="text-sm font-medium text-[var(--ink-soft)]">
                       편지
                     </span>
                     <textarea
@@ -226,17 +223,17 @@ export default function NewCapsulePage() {
                       disabled={submitting}
                       rows={6}
                       placeholder="미래의 그 사람에게…"
-                      className="resize-y rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-800 outline-none transition focus:border-slate-400 focus:ring-2 focus:ring-slate-200 disabled:opacity-50"
+                      className="field resize-y"
                     />
                   </label>
 
-                  <p className="rounded-2xl bg-sky-50/80 px-4 py-3 text-sm leading-relaxed text-slate-600">
+                  <p className="rounded-2xl border border-[var(--line)] bg-black/20 px-4 py-3 text-sm leading-relaxed text-[var(--muted)]">
                     캡슐을 묻는 순간의 날씨로 그날의 한마디, 키워드,
                     그리고 색과 형태가 다른 캡슐이 만들어집니다.
                   </p>
 
                   <label className="flex flex-col gap-2 text-left">
-                    <span className="text-sm font-medium text-slate-700">
+                    <span className="text-sm font-medium text-[var(--ink-soft)]">
                       열람일
                     </span>
                     <input
@@ -245,12 +242,12 @@ export default function NewCapsulePage() {
                       onChange={(e) => setOpenAt(e.target.value)}
                       required
                       disabled={submitting}
-                      className="rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-800 outline-none transition focus:border-slate-400 focus:ring-2 focus:ring-slate-200 disabled:opacity-50"
+                      className="field"
                     />
                   </label>
 
                   <label className="flex flex-col gap-2 text-left">
-                    <span className="text-sm font-medium text-slate-700">
+                    <span className="text-sm font-medium text-[var(--ink-soft)]">
                       사진
                     </span>
                     <input
@@ -259,7 +256,7 @@ export default function NewCapsulePage() {
                       multiple
                       disabled={submitting}
                       onChange={handleFilesChange}
-                      className="text-sm text-slate-600 file:mr-4 file:rounded-full file:border-0 file:bg-slate-100 file:px-4 file:py-2 file:text-sm file:font-medium file:text-slate-700 hover:file:bg-slate-200 disabled:opacity-50"
+                      className="field-file disabled:opacity-50"
                     />
                   </label>
 
@@ -271,7 +268,7 @@ export default function NewCapsulePage() {
                           key={url}
                           src={url}
                           alt={`미리보기 ${index + 1}`}
-                          className="h-20 w-20 rounded-2xl object-cover ring-1 ring-slate-200"
+                          className="h-20 w-20 rounded-2xl object-cover ring-1 ring-white/10"
                         />
                       ))}
                     </div>
@@ -280,7 +277,7 @@ export default function NewCapsulePage() {
                   <button
                     type="submit"
                     disabled={submitting}
-                    className="mt-2 inline-flex items-center justify-center gap-2 rounded-full bg-slate-800 px-8 py-3.5 text-sm font-medium tracking-wide text-slate-50 transition hover:bg-slate-700 hover:shadow-lg disabled:cursor-not-allowed disabled:opacity-50"
+                    className="btn-primary mt-2"
                   >
                     {submitting ? (
                       <>
@@ -297,7 +294,7 @@ export default function NewCapsulePage() {
           )}
         </div>
       </main>
-    </div>
+    </AppCanvas>
   );
 }
 
@@ -308,8 +305,10 @@ function ResultView({ result }: { result: CapsuleResult }) {
     <div className="text-center">
       {mood ? (
         <div
-          className="mb-6 rounded-3xl px-4 pb-5 pt-6"
-          style={{ background: `linear-gradient(180deg, ${mood.secondary}, #ffffff)` }}
+          className="mb-6 rounded-[1.6rem] border border-[var(--line)] px-4 pb-5 pt-6"
+          style={{
+            background: `radial-gradient(ellipse at 50% 0%, ${mood.primary}2e, transparent 62%), rgba(0,0,0,0.22)`,
+          }}
         >
           <WeatherCapsule
             form={mood.form}
@@ -318,24 +317,24 @@ function ResultView({ result }: { result: CapsuleResult }) {
             accent={mood.accent}
             size="hero"
           />
-          <p className="mt-3 text-xs font-medium" style={{ color: mood.accent }}>
+          <p className="kicker mt-3 normal-case tracking-[0.16em]">
             {FORM_LABEL[mood.form]}
           </p>
         </div>
       ) : (
-        <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-full bg-teal-100 text-3xl">
+        <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-full border border-[var(--gold)]/30 bg-[var(--gold)]/12 text-[var(--gold-soft)]">
           ✓
         </div>
       )}
-      <h1 className="mb-2 text-2xl font-semibold tracking-tight text-slate-800">
+      <h1 className="mb-2 text-3xl font-semibold tracking-tight text-[var(--paper)]">
         캡슐을 묻었어요
       </h1>
-      <p className="mb-6 text-sm text-slate-500">
+      <p className="mb-6 text-sm text-[var(--muted)]">
         {result.recipient}님에게 전달될 캡슐이 저장됐습니다.
       </p>
 
       {mood?.oneLiner ? (
-        <p className="mb-4 text-base font-medium leading-relaxed text-slate-700">
+        <p className="mb-4 font-serif text-lg font-medium leading-relaxed text-[var(--paper)]">
           “{mood.oneLiner}”
         </p>
       ) : null}
@@ -344,28 +343,28 @@ function ResultView({ result }: { result: CapsuleResult }) {
         keywords={mood?.keywords}
         accent={mood?.accent}
       />
-      <dl className="mb-8 space-y-3 rounded-2xl bg-slate-50 px-5 py-4 text-left text-sm">
+      <dl className="mb-8 space-y-3 rounded-2xl border border-[var(--line)] bg-black/20 px-5 py-4 text-left text-sm">
         <div>
-          <dt className="text-slate-400">캡슐 번호</dt>
-          <dd className="mt-0.5 break-all font-mono text-slate-700">
+          <dt className="text-[var(--faint)]">캡슐 번호</dt>
+          <dd className="mt-0.5 break-all font-mono text-[var(--ink-soft)]">
             {result.id}
           </dd>
         </div>
         <div>
-          <dt className="text-slate-400">열람일</dt>
-          <dd className="mt-0.5 text-slate-700">
+          <dt className="text-[var(--faint)]">열람일</dt>
+          <dd className="mt-0.5 text-[var(--ink-soft)]">
             {formatOpenAt(result.openAt)}
           </dd>
         </div>
         <div>
-          <dt className="text-slate-400">사진</dt>
-          <dd className="mt-0.5 text-slate-700">{result.imageUrls.length}장</dd>
+          <dt className="text-[var(--faint)]">사진</dt>
+          <dd className="mt-0.5 text-[var(--ink-soft)]">{result.imageUrls.length}장</dd>
         </div>
         {result.weather ? (
           <div>
-            <dt className="text-slate-400">묻은 날의 날씨</dt>
-            <dd className="mt-0.5 text-slate-700">
-              {weatherEmoji(result.weather.condition)} {result.weather.condition}
+            <dt className="text-[var(--faint)]">묻은 날의 날씨</dt>
+            <dd className="mt-0.5 text-[var(--ink-soft)]">
+              {result.weather.condition}
               {formatTemperature(result.weather.temperature)
                 ? ` · ${formatTemperature(result.weather.temperature)}`
                 : ""}
@@ -385,23 +384,17 @@ function ResultView({ result }: { result: CapsuleResult }) {
               key={url}
               src={url}
               alt=""
-              className="h-20 w-20 rounded-2xl object-cover ring-1 ring-slate-200"
+              className="h-20 w-20 rounded-2xl object-cover ring-1 ring-white/10"
             />
           ))}
         </div>
       ) : null}
 
       <div className="flex flex-col gap-3">
-        <Link
-          href={`/capsule/${result.id}`}
-          className="inline-flex items-center justify-center rounded-full bg-slate-800 px-8 py-3.5 text-sm font-medium tracking-wide text-slate-50 transition hover:bg-slate-700"
-        >
+        <Link href={`/capsule/${result.id}`} className="btn-primary">
           캡슐 보기
         </Link>
-        <Link
-          href="/"
-          className="text-sm text-slate-500 underline-offset-4 hover:text-slate-700 hover:underline"
-        >
+        <Link href="/" className="btn-ghost">
           홈으로
         </Link>
       </div>

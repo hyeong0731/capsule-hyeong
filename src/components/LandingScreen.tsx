@@ -1,5 +1,6 @@
 "use client";
 
+import AppCanvas from "@/components/AppCanvas";
 import LiveWeather from "@/components/LiveWeather";
 import WeatherCapsule from "@/components/WeatherCapsule";
 import { saveCapsuleDraft } from "@/lib/capsule-draft";
@@ -14,9 +15,9 @@ type LandingScreenProps = {
 };
 
 const BURIED_LOOKS = [
-  { form: "sun", primary: "#F6C453", secondary: "#FFF4D6", accent: "#E8892F" },
-  { form: "rain", primary: "#4F7EA8", secondary: "#D4E7F5", accent: "#1F4E79" },
-  { form: "breeze", primary: "#6DB39A", secondary: "#E5F6EE", accent: "#2F7A62" },
+  { form: "sun", primary: "#C9A36A", secondary: "#3A2E1C", accent: "#E4D2AE" },
+  { form: "rain", primary: "#6A8AAA", secondary: "#1C2832", accent: "#B7C9D8" },
+  { form: "breeze", primary: "#7A9A86", secondary: "#1C2822", accent: "#C5D8CC" },
 ] as const;
 
 export default function LandingScreen({
@@ -69,31 +70,29 @@ export default function LandingScreen({
   }
 
   return (
-    <div className="min-h-full bg-gradient-to-b from-slate-100 via-sky-50 to-teal-50/50 px-6 py-10">
+    <AppCanvas className="px-6 py-10">
       <div className="mx-auto w-full max-w-xl space-y-5">
         <LiveWeather />
 
-        <section className="overflow-hidden rounded-3xl border border-white/70 bg-white/75 px-6 py-8 text-center shadow-[0_24px_60px_-28px_rgba(30,58,95,0.35)] backdrop-blur-sm sm:px-8">
-          <p className="text-sm font-medium tracking-wide text-slate-500">
-            캡슐 미
-          </p>
-          <h1 className="mt-1 text-3xl font-semibold tracking-tight text-slate-800 sm:text-4xl">
+        <section className="panel overflow-hidden rounded-[2rem] px-6 py-9 text-center sm:px-8">
+          <p className="kicker">Capsule Me</p>
+          <h1 className="mt-3 text-4xl font-semibold tracking-tight text-[var(--paper)] sm:text-5xl">
             오늘의 마음을 묻어요
           </h1>
-          <p className="mt-2 text-sm leading-relaxed text-slate-500">
-            사진과 편지를 담고, 열람일에 함께 열어요.
+          <p className="mx-auto mt-3 max-w-sm text-sm leading-relaxed text-[var(--muted)]">
+            하늘과 편지를 한 단지에 담고, 열람일에 다시 만나요.
           </p>
 
-          <div className="mt-6 flex items-end justify-center">
+          <div className="mt-8 flex items-end justify-center">
             {BURIED_LOOKS.map((look, index) => (
               <div
                 key={look.form}
-                className={`-mx-3 ${index === 1 ? "z-10" : "opacity-80"}`}
+                className={`-mx-3 ${index === 1 ? "z-10" : "opacity-70"}`}
                 style={{
                   transform:
                     index === 1
                       ? "translateY(0) scale(1)"
-                      : "translateY(14px) scale(0.82)",
+                      : "translateY(16px) scale(0.8)",
                 }}
               >
                 <WeatherCapsule
@@ -107,21 +106,19 @@ export default function LandingScreen({
             ))}
           </div>
 
-          <div className="mt-5">
+          <div className="mt-6">
             {!countReady ? (
-              <div className="mx-auto h-16 w-40 animate-pulse rounded-2xl bg-slate-200/70" />
+              <div className="mx-auto h-14 w-36 animate-pulse rounded-2xl bg-white/5" />
             ) : count === 0 ? (
-              <p className="text-sm text-slate-500">
+              <p className="text-sm text-[var(--muted)]">
                 아직 묻힌 캡슐이 없어요. 첫 캡슐을 묻어보세요.
               </p>
             ) : count != null ? (
               <>
-                <p className="text-xs font-medium tracking-wide text-slate-400">
-                  지금까지 묻힌 캡슐
-                </p>
-                <p className="mt-1 text-4xl font-semibold tabular-nums tracking-tight text-slate-800">
+                <p className="kicker">지금까지 묻힌 캡슐</p>
+                <p className="mt-2 font-serif text-5xl font-semibold tabular-nums tracking-tight text-[var(--gold-soft)]">
                   {count.toLocaleString("ko-KR")}
-                  <span className="ml-1 text-base font-medium text-slate-500">
+                  <span className="ml-1 font-sans text-base font-medium text-[var(--muted)]">
                     개
                   </span>
                 </p>
@@ -130,14 +127,14 @@ export default function LandingScreen({
           </div>
         </section>
 
-        <main className="rounded-3xl border border-white/70 bg-white/75 px-6 py-8 shadow-[0_24px_60px_-28px_rgba(30,58,95,0.35)] backdrop-blur-sm sm:px-8">
-          <h2 className="mb-6 text-2xl font-semibold tracking-tight text-slate-800">
+        <main className="panel rounded-[2rem] px-6 py-8 sm:px-8">
+          <h2 className="mb-6 text-2xl font-semibold tracking-tight text-[var(--paper)]">
             캡슐 묻기
           </h2>
 
           <form onSubmit={handleSubmit} className="flex flex-col gap-6">
             <label className="flex flex-col gap-2 text-left">
-              <span className="text-sm font-medium text-slate-700">
+              <span className="text-sm font-medium text-[var(--ink-soft)]">
                 받는 사람
               </span>
               <input
@@ -146,40 +143,40 @@ export default function LandingScreen({
                 onChange={(event) => setRecipient(event.target.value)}
                 disabled={locked}
                 placeholder="미래의 나, 또는 누군가"
-                className="rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-800 outline-none transition focus:border-slate-400 focus:ring-2 focus:ring-slate-200 disabled:opacity-50"
+                className="field"
               />
             </label>
 
             <label className="flex flex-col gap-2 text-left">
-              <span className="text-sm font-medium text-slate-700">편지</span>
+              <span className="text-sm font-medium text-[var(--ink-soft)]">편지</span>
               <textarea
                 value={letter}
                 onChange={(event) => setLetter(event.target.value)}
                 disabled={locked}
                 rows={5}
                 placeholder="오늘의 하늘과 마음을 담아…"
-                className="resize-y rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-800 outline-none transition focus:border-slate-400 focus:ring-2 focus:ring-slate-200 disabled:opacity-50"
+                className="field resize-y"
               />
             </label>
 
-            <p className="rounded-2xl bg-sky-50/80 px-4 py-3 text-sm leading-relaxed text-slate-600">
+            <p className="rounded-2xl border border-[var(--line)] bg-black/20 px-4 py-3 text-sm leading-relaxed text-[var(--muted)]">
               묻는 순간의 날씨로 그날의 한마디, 키워드, 그리고 색과 형태가 다른
               캡슐이 만들어집니다.
             </p>
 
             <label className="flex flex-col gap-2 text-left">
-              <span className="text-sm font-medium text-slate-700">열람일</span>
+              <span className="text-sm font-medium text-[var(--ink-soft)]">열람일</span>
               <input
                 type="datetime-local"
                 value={openAt}
                 onChange={(event) => setOpenAt(event.target.value)}
                 disabled={locked}
-                className="rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-800 outline-none transition focus:border-slate-400 focus:ring-2 focus:ring-slate-200 disabled:opacity-50"
+                className="field"
               />
             </label>
 
             <label className="flex flex-col gap-2 text-left">
-              <span className="text-sm font-medium text-slate-700">사진</span>
+              <span className="text-sm font-medium text-[var(--ink-soft)]">사진</span>
               <input
                 type="file"
                 accept="image/*"
@@ -189,7 +186,7 @@ export default function LandingScreen({
                   const selected = event.target.files;
                   setFiles(selected ? Array.from(selected) : []);
                 }}
-                className="text-sm text-slate-600 file:mr-4 file:rounded-full file:border-0 file:bg-slate-100 file:px-4 file:py-2 file:text-sm file:font-medium file:text-slate-700 hover:file:bg-slate-200 disabled:opacity-50"
+                className="field-file disabled:opacity-50"
               />
             </label>
 
@@ -201,17 +198,13 @@ export default function LandingScreen({
                     key={url}
                     src={url}
                     alt={`미리보기 ${index + 1}`}
-                    className="h-20 w-20 rounded-2xl object-cover ring-1 ring-slate-200"
+                    className="h-20 w-20 rounded-2xl object-cover ring-1 ring-white/10"
                   />
                 ))}
               </div>
             ) : null}
 
-            <button
-              type="submit"
-              disabled={locked}
-              className="mt-1 inline-flex items-center justify-center gap-2 rounded-full bg-slate-800 px-8 py-3.5 text-sm font-medium tracking-wide text-slate-50 transition hover:bg-slate-700 hover:shadow-lg disabled:cursor-not-allowed disabled:opacity-50"
-            >
+            <button type="submit" disabled={locked} className="btn-primary mt-1">
               {busy
                 ? "이어서 묻는 중…"
                 : !ready
@@ -219,18 +212,18 @@ export default function LandingScreen({
                   : "캡슐 묻기"}
             </button>
 
-            <p className="text-center text-xs leading-relaxed text-slate-400">
+            <p className="text-center text-xs leading-relaxed text-[var(--faint)]">
               묻는 순간 Google 계정으로 이어집니다.
             </p>
 
             {error ? (
-              <p className="text-center text-sm text-rose-600" role="alert">
+              <p className="text-center text-sm text-[var(--danger)]" role="alert">
                 {error}
               </p>
             ) : null}
           </form>
         </main>
       </div>
-    </div>
+    </AppCanvas>
   );
 }

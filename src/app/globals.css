@@ -1,28 +1,173 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --night: #100e0c;
+  --dusk: #171410;
+  --soil: #241f19;
+  --panel: rgba(36, 31, 25, 0.72);
+  --paper: #f3eadc;
+  --ink: #f3eadc;
+  --ink-soft: #d8ccba;
+  --muted: #9d9183;
+  --faint: #6f665c;
+  --line: rgba(243, 234, 220, 0.1);
+  --line-strong: rgba(243, 234, 220, 0.18);
+  --gold: #c9a36a;
+  --gold-soft: #e4d2ae;
+  --copper: #b58862;
+  --danger: #e2a396;
+  --background: var(--night);
+  --foreground: var(--ink);
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
+  --color-night: var(--night);
+  --color-dusk: var(--dusk);
+  --color-soil: var(--soil);
+  --color-paper: var(--paper);
+  --color-ink: var(--ink);
+  --color-muted: var(--muted);
+  --color-gold: var(--gold);
+  --color-copper: var(--copper);
+  --font-sans: var(--font-ui);
+  --font-serif: var(--font-display);
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  color-scheme: dark;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  min-height: 100%;
+  background: var(--night);
+  color: var(--ink);
+  font-family: var(--font-ui), "Apple SD Gothic Neo", sans-serif;
+}
+
+h1,
+h2,
+h3,
+.font-serif {
+  font-family: var(--font-display), "Apple SD Gothic Neo", serif;
+}
+
+.app-canvas {
+  position: relative;
+  isolation: isolate;
+  min-height: 100%;
+  background-color: var(--night);
+  background-image:
+    radial-gradient(ellipse 90% 55% at 50% -18%, rgba(201, 163, 106, 0.16), transparent 58%),
+    radial-gradient(ellipse 50% 40% at 100% 110%, rgba(92, 64, 42, 0.28), transparent 55%),
+    radial-gradient(ellipse 45% 35% at 0% 90%, rgba(58, 74, 86, 0.16), transparent 50%);
+}
+
+.app-grain {
+  pointer-events: none;
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  opacity: 0.22;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+.panel {
+  border: 1px solid var(--line);
+  background: var(--panel);
+  box-shadow: 0 24px 60px -32px rgba(0, 0, 0, 0.55);
+  backdrop-filter: blur(18px);
+}
+
+.kicker {
+  font-size: 0.7rem;
+  font-weight: 500;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.field {
+  width: 100%;
+  border-radius: 0.9rem;
+  border: 1px solid var(--line-strong);
+  background: rgba(16, 14, 12, 0.45);
+  padding: 0.8rem 1rem;
+  font-size: 0.9rem;
+  color: var(--ink);
+  outline: none;
+  transition:
+    border-color 160ms ease,
+    box-shadow 160ms ease;
+}
+
+.field::placeholder {
+  color: var(--faint);
+}
+
+.field:focus {
+  border-color: rgba(201, 163, 106, 0.65);
+  box-shadow: 0 0 0 3px rgba(201, 163, 106, 0.14);
+}
+
+.field:disabled {
+  opacity: 0.5;
+}
+
+.field-file {
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+
+.field-file::file-selector-button {
+  margin-right: 1rem;
+  border: 0;
+  border-radius: 999px;
+  background: rgba(243, 234, 220, 0.08);
+  padding: 0.5rem 1rem;
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: var(--paper);
+  cursor: pointer;
+}
+
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  border-radius: 999px;
+  background: linear-gradient(180deg, #d7b57a 0%, #b88948 100%);
+  padding: 0.85rem 2rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: #1a140c;
+  transition:
+    filter 160ms ease,
+    transform 160ms ease;
+}
+
+.btn-primary:hover {
+  filter: brightness(1.06);
+}
+
+.btn-primary:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.btn-ghost {
+  color: var(--muted);
+  font-size: 0.875rem;
+  transition: color 160ms ease;
+}
+
+.btn-ghost:hover {
+  color: var(--paper);
 }
 
 @keyframes capsule-float {
@@ -33,4 +178,59 @@ body {
   50% {
     transform: translateY(-6px);
   }
+}
+
+@keyframes live-pulse {
+  0%,
+  100% {
+    opacity: 0.4;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0;
+    transform: scale(1.8);
+  }
+}
+
+.weather-panel {
+  border: 1px solid var(--line);
+  background:
+    linear-gradient(165deg, rgba(201, 163, 106, 0.1), transparent 42%),
+    linear-gradient(180deg, rgba(36, 31, 25, 0.88), rgba(18, 16, 14, 0.92));
+}
+
+.weather-panel-sun {
+  background:
+    linear-gradient(165deg, rgba(212, 164, 72, 0.22), transparent 46%),
+    linear-gradient(180deg, #2a2216, #14110e);
+}
+
+.weather-panel-heat {
+  background:
+    linear-gradient(165deg, rgba(196, 92, 48, 0.22), transparent 48%),
+    linear-gradient(180deg, #2b1b14, #14110e);
+}
+
+.weather-panel-cloud {
+  background:
+    linear-gradient(165deg, rgba(148, 160, 176, 0.16), transparent 48%),
+    linear-gradient(180deg, #1f2328, #14110e);
+}
+
+.weather-panel-overcast {
+  background:
+    linear-gradient(165deg, rgba(110, 118, 128, 0.2), transparent 48%),
+    linear-gradient(180deg, #1b1d20, #14110e);
+}
+
+.weather-panel-rain {
+  background:
+    linear-gradient(165deg, rgba(78, 112, 138, 0.28), transparent 50%),
+    linear-gradient(180deg, #172028, #121014);
+}
+
+.weather-panel-snow {
+  background:
+    linear-gradient(165deg, rgba(186, 204, 224, 0.16), transparent 48%),
+    linear-gradient(180deg, #1c2228, #14110e);
 }
